@@ -28,24 +28,38 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.textBox = new System.Windows.Forms.RichTextBox();
+            this.human = new System.Windows.Forms.RichTextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.absolute = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
-            // textBox
+            // human
             // 
-            this.textBox.Location = new System.Drawing.Point(246, 147);
-            this.textBox.Name = "textBox";
-            this.textBox.Size = new System.Drawing.Size(345, 96);
-            this.textBox.TabIndex = 0;
-            this.textBox.Text = "";
+            this.human.Location = new System.Drawing.Point(1, -2);
+            this.human.Name = "human";
+            this.human.ReadOnly = true;
+            this.human.Size = new System.Drawing.Size(345, 96);
+            this.human.TabIndex = 0;
+            this.human.Text = "";
+            // 
+            // absolute
+            // 
+            this.absolute.Location = new System.Drawing.Point(1, 100);
+            this.absolute.Name = "absolute";
+            this.absolute.ReadOnly = true;
+            this.absolute.Size = new System.Drawing.Size(345, 96);
+            this.absolute.TabIndex = 1;
+            this.absolute.Text = "";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1433, 630);
-            this.Controls.Add(this.textBox);
+            this.Controls.Add(this.absolute);
+            this.Controls.Add(this.human);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -55,7 +69,9 @@
         #endregion
 
         private System.Windows.Forms.ColorDialog colorDialog1;
-        private System.Windows.Forms.RichTextBox textBox;
+        private System.Windows.Forms.RichTextBox human;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.RichTextBox absolute;
     }
 }
 
