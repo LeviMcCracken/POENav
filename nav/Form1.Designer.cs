@@ -28,12 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.textBox = new System.Windows.Forms.RichTextBox();
+            this.SuspendLayout();
+            // 
+            // textBox
+            // 
+            this.textBox.Location = new System.Drawing.Point(246, 147);
+            this.textBox.Name = "textBox";
+            this.textBox.Size = new System.Drawing.Size(345, 96);
+            this.textBox.TabIndex = 0;
+            this.textBox.Text = "";
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1433, 630);
+            this.Controls.Add(this.textBox);
+            this.Name = "Form1";
             this.Text = "Form1";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.RichTextBox textBox;
     }
 }
 
