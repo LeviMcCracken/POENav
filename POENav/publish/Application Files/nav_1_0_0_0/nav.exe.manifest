@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="nav.exe" version="1.0.0.0" publicKeyToken="8d9c293e97f62d70" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="nav" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="nav.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the 
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward 
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="nav.exe" size="18416">
+      <assemblyIdentity name="nav" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>MsNuAeH6Dqe8AbTOTcla1ZR6AY2Ji/lkPv43glX/5bw=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="nav.exe.config" size="1006">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>xzudqn4DRe2NwdbQ9k4rH/hEOpxgTQs+y8lJyBYYoHo=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=DESKTOP-NRU5RN4\Saruman" issuerKeyHash="a8f72fa9b71f703c63f942e68ebdc9ffbb92d54c" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>RmXxZQMGSWj2w41oNrZAEkJIGbE0v+cEgITvH8Gisvc=</DigestValue></Reference></SignedInfo><SignatureValue>XHOeTuVp0uU9jvLGBKm8dwcff2oRjpu24IozsNucsFWoZqyFwibXC34rIQzNXBuFHQ5upC3OSiqJSsaiYq+K8+oDK6GKXDhSUf8yu7bEnwb36YVn38jgK4W6T1Na3JtO/p4JYqvxrkqAigt/ctKJX4+70/zSl9pULMffcC5XLZc=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>sUYfcgT34RLjQuWzA4bNjJ4ciN+nq128Jg0+hJ7vQToUgR5gDl1gz25wZAppNrUU+5BlbhIsZZmndnvCMGNMlDrPgWw3Rvf9pEuQvXl4ne8wo7SL/fJcjBd4C15w8XcW3/WgKj/n8vlMFdx5isWtwm7y6exwKD9bwnXUKIntkyE=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="f7b2a2c11fef848004e7bf34b11948421240b636688dc3f66849060365f16546" Description="" Url=""><as:assemblyIdentity name="nav.exe" version="1.0.0.0" publicKeyToken="8d9c293e97f62d70" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=DESKTOP-NRU5RN4\Saruman</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>MJBv9URyizuiyEaBhx8schTdMdL56E2N/MvqUmKGbZ0=</DigestValue></Reference></SignedInfo><SignatureValue>hta6x0QCli4AiV9fiekFC26q5YrrunMBkHOyJ+kT/W+M9zAagPD933m+MvJ8hAdId4R6YWezaMi09igtMxuBJSk82BFuNWISv5GrzGf9cLQ4rUeqqVqP/C0z7nhHhwST/08aW96tVFAxBDg+vpLu+AetlbB3DgGZXx2YM4yNMGE=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>sUYfcgT34RLjQuWzA4bNjJ4ciN+nq128Jg0+hJ7vQToUgR5gDl1gz25wZAppNrUU+5BlbhIsZZmndnvCMGNMlDrPgWw3Rvf9pEuQvXl4ne8wo7SL/fJcjBd4C15w8XcW3/WgKj/n8vlMFdx5isWtwm7y6exwKD9bwnXUKIntkyE=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB9TCCAV6gAwIBAgIQFzysZFi7779M5N1Sk434ZTANBgkqhkiG9w0BAQsFADA5MTcwNQYDVQQDHi4ARABFAFMASwBUAE8AUAAtAE4AUgBVADUAUgBOADQAXABTAGEAcgB1AG0AYQBuMB4XDTE4MDMxMTE2NTcwNVoXDTE5MDMxMTIyNTcwNVowOTE3MDUGA1UEAx4uAEQARQBTAEsAVABPAFAALQBOAFIAVQA1AFIATgA0AFwAUwBhAHIAdQBtAGEAbjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAsUYfcgT34RLjQuWzA4bNjJ4ciN+nq128Jg0+hJ7vQToUgR5gDl1gz25wZAppNrUU+5BlbhIsZZmndnvCMGNMlDrPgWw3Rvf9pEuQvXl4ne8wo7SL/fJcjBd4C15w8XcW3/WgKj/n8vlMFdx5isWtwm7y6exwKD9bwnXUKIntkyECAwEAATANBgkqhkiG9w0BAQsFAAOBgQBegbzk9yQFfxL915Iwhj5aO5Om0Gcba17AmcYHqxJsC2F/jf2AXHJDTYUkRJ2V9eZglNaqnQlYQxKKwMUSPzO8WQSZheZ4f11D9Muqbv8fSAOjKW5bC5nilf0JDBbPKujbNfr/xunEurdoaHJ5mjPOV6YWWYAPh3QIBFgT76q/lA==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
