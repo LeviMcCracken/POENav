@@ -14,60 +14,56 @@ namespace nav
     public partial class Form1 : Form
     {
 
-        string path = "";
+        string logfileStr = "";
         string entryHumanString = "You have entered ";
         string entryAbsoluteString = "Entering area ";
-
         int entryHumanStringLen;
         int entryAbsoluteStringLen;
+        string mapFolder = "";
 
         long lastReadLength;
-        FileStream fs;
-        FolderBrowserDialog fbd = new FolderBrowserDialog();
+        FileStream logFileStream;
 
         public Form1()
         {
-            DialogResult folder = fbd.ShowDialog();
-            OpenFileDialog file = new OpenFileDialog();
-
-
-            if (file.ShowDialog() == DialogResult.OK)
-            {
-                path = file.FileName;
-
-                fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                lastReadLength = fs.Length;
-
-                entryHumanStringLen = entryHumanString.Length;
-                entryAbsoluteStringLen = entryAbsoluteString.Length;
-
-                InitializeComponent();
-
-                // Call this procedure when the application starts.  
-                // Set to 1 second.  
-                timer1.Interval = 1000;
-                timer1.Tick += new EventHandler(timer1_tick);
-
-                // Enable timer. 
-                timer1.Enabled = true;
-            }
+            InitializeComponent();
             
+            entryHumanStringLen = entryHumanString.Length;
+            entryAbsoluteStringLen = entryAbsoluteString.Length;
+
+            logfileStr = Properties.Settings.Default.logFile;
+            mapFolder = Properties.Settings.Default.mapFolder;
+            
+            mapFolderLoc.Text = "Map folder Location: " + mapFolder;
+            logFileLoc.Text = "Log file Location: " + logfileStr;
+
+            // Set to 1 second.  
+            timer1.Interval = 1000;
+            timer1.Tick += new EventHandler(timer1_tick);
+
+            // Enable timer. 
+            timer1.Enabled = true;
+
         }
 
         private void timer1_tick(object sender, System.EventArgs e)
         {
-            
-            fs.Seek(lastReadLength, SeekOrigin.Begin);
+            if (logFileStream != null) {
+                logFileStream.Seek(lastReadLength, SeekOrigin.Begin);
 
-            // read 1024 bytes
-            byte[] bytes = new byte[1024];
-            var bytesRead = fs.Read(bytes, 0, 1024);
-            lastReadLength += bytesRead; //TODO, what if this splits the string?
+                // read 1024 bytes
+                byte[] bytes = new byte[1024];
+                var bytesRead = logFileStream.Read(bytes, 0, 1024);
+                lastReadLength += bytesRead; //TODO, what if this splits the string?
 
-            // Convert bytes to string
-            string s = Encoding.Default.GetString(bytes);
+                // Convert bytes to string
+                string s = Encoding.Default.GetString(bytes);
 
-            parseLogSnippet(s);
+                parseLogSnippet(s);
+            }else if(logfileStr != ""){
+                logFileStream = File.Open(logfileStr, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                lastReadLength = logFileStream.Length;
+            }
         }
 
         private void parseLogSnippet(string s)
@@ -81,7 +77,6 @@ namespace nav
                 if (index != -1)
                 {
                     humanName = line.Substring(index + entryHumanStringLen).Replace(" ", "").Replace("'", "").Replace(".", "");
-                    human.Text = humanName;
                 }
                 int indexAbs = line.IndexOf(entryAbsoluteString);
                 if (indexAbs != -1)
@@ -91,23 +86,19 @@ namespace nav
                     displayMap(areaName, humanName);
                 }
             }
-
-            
-
-            //textBox.Text = area;
         }
 
         private void displayMap(string areaName, string humanName)
         {
-            string mapFolder = makeStringLegal(fbd.SelectedPath.ToString() + @"\" + areaName);
+            string localMapFolder = makeStringLegal(mapFolder + @"\" + areaName);
 
-            if (Directory.Exists(mapFolder))
+            if (Directory.Exists(localMapFolder))
             {
                 try
                 {
                     
                     richTextBox1.Text = "";
-                    string[] files = Directory.GetFiles(mapFolder);
+                    string[] files = Directory.GetFiles(localMapFolder);
 
                     tableLayoutPanel1.Controls.Clear();
 
@@ -121,8 +112,6 @@ namespace nav
                         int rows = columns;
                         if ((rows - 1) * columns >= files.Length) { rows--; }
                         if (rows == 0) { rows = 1; }
-
-                        richTextBox2.Text = columns + ":" + rows;
 
                         tableLayoutPanel1.ColumnCount = columns;
                         tableLayoutPanel1.RowCount = rows;
@@ -140,22 +129,33 @@ namespace nav
                             tableLayoutPanel1.Controls.Add(pb, i % columns, i / columns);
                             i++;
                         }
-                        
+
+                    }
+                    else
+                    {
+                        richTextBox1.Text += "No Maps Found For This Area" + "\n";
+                        richTextBox1.Text += mapFolder + @"\NoMapFound.png";
+                        PictureBox pb = new PictureBox();
+                        pb.ImageLocation = mapFolder + @"\NoMapFound.png";
+                        pb.SizeMode = PictureBoxSizeMode.Zoom;
+                        pb.Dock = DockStyle.Fill;
+
+                        tableLayoutPanel1.Controls.Add(pb, 0, 0);
                     }
                 }
                 catch (Exception e)
                 {
                     richTextBox1.Text = e.ToString();
-                    richTextBox1.Text += "\n" + mapFolder;
+                    richTextBox1.Text += "\n" + localMapFolder;
                 }
             }
             else
             {
-                using (StreamWriter outputFile = new StreamWriter(fbd.SelectedPath + "\\nameMap.txt", true))
+                using (StreamWriter outputFile = new StreamWriter(mapFolder + "\\nameMap.txt", true))
                 {
                     outputFile.WriteLine(areaName + " " + humanName);
                 }
-                Directory.CreateDirectory(mapFolder);
+                Directory.CreateDirectory(localMapFolder);
             }
         }
 
@@ -170,15 +170,40 @@ namespace nav
 
             return s;
         }
-
-        private void human_TextChanged(object sender, EventArgs e)
+        
+        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
         {
 
         }
 
-        private void tableLayoutPanel3_Paint(object sender, PaintEventArgs e)
+        private void logFileLoc_Click(object sender, EventArgs e)
         {
+            OpenFileDialog file = new OpenFileDialog();
 
+            if (file.ShowDialog() == DialogResult.OK)
+            {
+                logfileStr = file.FileName;
+
+                logFileStream = File.Open(logfileStr, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                lastReadLength = logFileStream.Length;
+
+                logFileLoc.Text = "Log file Location: " + logfileStr;
+
+                Properties.Settings.Default["logFile"] = logfileStr;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        private void mapFolderLoc_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            DialogResult folder = fbd.ShowDialog();
+            mapFolder = makeStringLegal(fbd.SelectedPath.ToString());
+
+            mapFolderLoc.Text = "Map folder Location: " + mapFolder;
+
+            Properties.Settings.Default["mapFolder"] = mapFolder;
+            Properties.Settings.Default.Save();
         }
     }
 }
