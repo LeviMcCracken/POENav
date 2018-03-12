@@ -1,4 +1,8 @@
-﻿using System;
+﻿//#define INITTREE
+#define ZONELEVELINIT
+
+using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace nav
 {
     public partial class Form1 : Form
@@ -18,12 +23,15 @@ namespace nav
         string logfileStr = "";
         string entryHumanString = "You have entered ";
         string entryAbsoluteString = "Entering area ";
+        string areaName = "";
         int entryHumanStringLen;
         int entryAbsoluteStringLen;
         string mapFolder = "";
-
-        int yourLevel = 6;
-        int mapLevel = 8;
+        int rowHighlight = 0;
+        int yourLevel = 0;
+        int mapLevel = 0;
+        List<Tuple<string, int>> areaLevels;
+        bool mapFolderInit = false;
 
         long lastReadLength;
         FileStream logFileStream;
@@ -31,7 +39,19 @@ namespace nav
         public Form1()
         {
             InitializeComponent();
-            
+
+            areaLevels = new List<Tuple<string, int>>();            
+            levelTable.ColumnCount = 2;
+            levelTable.RowCount = 100;
+
+            TableLayoutRowStyleCollection styles = levelTable.RowStyles;
+            foreach (RowStyle style in styles)
+            {
+                // Set the row height to 20 pixels.
+                style.SizeType = SizeType.Absolute;
+                style.Height = 20;
+            }
+
             entryHumanStringLen = entryHumanString.Length;
             entryAbsoluteStringLen = entryAbsoluteString.Length;
 
@@ -85,12 +105,16 @@ namespace nav
                 logFileStream = File.Open(logfileStr, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 lastReadLength = logFileStream.Length;
             }
+
+            if(mapFolder != "" && !mapFolderInit)
+            {
+                initZoneLvl();
+            }
         }
 
         private void parseLogSnippet(string s)
         {
             string[] lines = s.Split('\n');
-            string areaName = "";
             string humanName = "";
             foreach (string line in lines)
             {
@@ -105,7 +129,41 @@ namespace nav
                     areaName = line.Substring(indexAbs + entryAbsoluteStringLen);
                     absolute.Text = areaName;
                     displayMap(areaName, humanName);
+                    setZoneLvl(areaName);
                 }
+            }
+        }
+
+        private void setZoneLvl(string areaName)
+        {
+            foreach (Tuple<string, int> area in areaLevels)
+            {
+                if (area.Item1 == areaName)
+                {
+                    mapLevel = area.Item2;
+                }
+            }
+        }
+
+        private void initZoneLvl()
+        { 
+            string localMapFolder = makeStringLegal(mapFolder + @"zoneLevel.csv");
+
+            string line = "";
+            StreamReader file = new StreamReader(localMapFolder);
+            while ((line = file.ReadLine()) != null)
+            {
+                string[] partsOfLine = line.Split(',');
+                for (int i = 0; i < partsOfLine.Length; i++)
+                {
+                    partsOfLine[i] = partsOfLine[i].Trim();
+                }
+
+                int parsedNum = 0;
+                Int32.TryParse(partsOfLine[1], out parsedNum);
+                Tuple<string, int> areaEntry = new Tuple<string, int>(partsOfLine[0], parsedNum);
+
+                areaLevels.Add(areaEntry);
             }
         }
 
@@ -172,11 +230,13 @@ namespace nav
             }
             else
             {
+#if INITTREE
                 using (StreamWriter outputFile = new StreamWriter(mapFolder + "\\nameMap.txt", true))
                 {
                     outputFile.WriteLine(areaName + " " + humanName);
                 }
                 Directory.CreateDirectory(localMapFolder);
+#endif
             }
         }
 
@@ -237,22 +297,43 @@ namespace nav
         {
             mapLevel = mapLevelBox.SelectedIndex;
             redrawLevelTable();
+#if ZONELEVELINIT
+            bool found = false;
+            foreach (Tuple<string, int> area in areaLevels)
+            {
+                if(area.Item1 == areaName)
+                {
+                    found = true;
+                }
+            }
+            if (!found)
+            {
+                Tuple<string, int> newEntry = new Tuple<String, int>(areaName, mapLevel);
+                areaLevels.Add(newEntry);
+
+                using (StreamWriter outputFile = new StreamWriter(mapFolder + @"zoneLevel.csv", true))
+                {
+                    outputFile.WriteLine(areaName + "," + mapLevel);
+                }
+            }
+#endif
         }
 
         private void redrawLevelTable()
         {
             levelTable.Controls.Clear();
 
-            levelTable.ColumnCount = 2;
-            levelTable.RowCount = 11;
-
             int safeZone = (int)Math.Floor((double)(3 + (yourLevel / 16)));
+
+            int shownRow = 0;
 
             for (int r = 0; r < 100; r++)
             {
+
                 TextBox tableLevel = new TextBox();
                 tableLevel.Dock = DockStyle.Fill;
                 int monsterLevel = r + 1;
+                if (monsterLevel == mapLevel) { rowHighlight = shownRow; }
                 tableLevel.Text = (monsterLevel).ToString();
 
                 TextBox xpMultiBox = new TextBox();
@@ -260,18 +341,27 @@ namespace nav
 
                 int effectiveDiff = Math.Abs(yourLevel - monsterLevel) - safeZone;
                 if (effectiveDiff < 0) effectiveDiff = 0;
-                double xpMult = Math.Pow(((yourLevel + 5) / (yourLevel + 5 + Math.Pow(effectiveDiff, 2.5))), 1.5)*100;
-                xpMultiBox.Text = Math.Round(xpMult, 2).ToString()+"%";
+                double xpMult = Math.Pow(((yourLevel + 5) / (yourLevel + 5 + Math.Pow(effectiveDiff, 2.5))), 1.5);
+                xpMultiBox.Text = Math.Round(xpMult*100, 2).ToString()+"%";
 
-                if (xpMult > 20) {
-                    levelTable.Controls.Add(tableLevel, 0, r);
-                    levelTable.Controls.Add(xpMultiBox, 1, r);
+                int colorVal = (int)Math.Floor(255 * xpMult);
+                tableLevel.BackColor = Color.FromArgb(255 - colorVal, colorVal, 0);
+                xpMultiBox.BackColor = Color.FromArgb(255 - colorVal, colorVal, 0);
+
+                if (xpMult > 0.20) {
+                    levelTable.Controls.Add(tableLevel, 0, shownRow);
+                    levelTable.Controls.Add(xpMultiBox, 1, shownRow);
+                    shownRow++;
                 }
             }
 
-            //levelTable.Controls.Add(ltb, 0, 0);
-            //levelTable.Controls.Add(mtb, 1, 0);
-    
+            levelTable.CellPaint += levelTable_CellPaint;
+        }
+
+        void levelTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
+        {
+            if (e.Row == rowHighlight)
+                e.Graphics.DrawRectangle(new Pen(Color.Red, 3), e.CellBounds);
         }
 
         //copied from https://msdn.microsoft.com/en-us/library/ms404263.aspx
@@ -343,6 +433,6 @@ namespace nav
                     }
                 }
             }
-        }
+        }        
     }
 }

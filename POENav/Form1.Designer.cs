@@ -42,9 +42,9 @@
             this.logFileLoc = new System.Windows.Forms.Label();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.Level = new System.Windows.Forms.TableLayoutPanel();
-            this.levelTable = new System.Windows.Forms.TableLayoutPanel();
-            this.yourLevelBox = new System.Windows.Forms.ComboBox();
             this.mapLevelBox = new System.Windows.Forms.ComboBox();
+            this.yourLevelBox = new System.Windows.Forms.ComboBox();
+            this.levelTable = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanelRoot.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -202,12 +202,33 @@
             this.Level.Name = "Level";
             this.Level.RowCount = 1;
             this.Level.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.Level.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.Level.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.Level.Size = new System.Drawing.Size(268, 34);
             this.Level.TabIndex = 0;
             // 
+            // mapLevelBox
+            // 
+            this.mapLevelBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mapLevelBox.FormattingEnabled = true;
+            this.mapLevelBox.Location = new System.Drawing.Point(137, 3);
+            this.mapLevelBox.Name = "mapLevelBox";
+            this.mapLevelBox.Size = new System.Drawing.Size(128, 21);
+            this.mapLevelBox.TabIndex = 1;
+            this.mapLevelBox.SelectedIndexChanged += new System.EventHandler(this.mapLevel_SelectedIndexChanged);
+            // 
+            // yourLevelBox
+            // 
+            this.yourLevelBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.yourLevelBox.FormattingEnabled = true;
+            this.yourLevelBox.Location = new System.Drawing.Point(3, 3);
+            this.yourLevelBox.Name = "yourLevelBox";
+            this.yourLevelBox.Size = new System.Drawing.Size(128, 21);
+            this.yourLevelBox.TabIndex = 0;
+            this.yourLevelBox.SelectedIndexChanged += new System.EventHandler(this.yourLevel_SelectedIndexChanged);
+            // 
             // levelTable
             // 
+            this.levelTable.AutoScroll = true;
             this.levelTable.ColumnCount = 3;
             this.levelTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.levelTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
@@ -220,26 +241,6 @@
             this.levelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.levelTable.Size = new System.Drawing.Size(268, 330);
             this.levelTable.TabIndex = 1;
-            // 
-            // yourLevelBox
-            // 
-            this.yourLevelBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.yourLevelBox.FormattingEnabled = true;
-            this.yourLevelBox.Location = new System.Drawing.Point(3, 3);
-            this.yourLevelBox.Name = "yourLevelBox";
-            this.yourLevelBox.Size = new System.Drawing.Size(128, 21);
-            this.yourLevelBox.TabIndex = 0;
-            this.yourLevelBox.SelectedIndexChanged += new System.EventHandler(this.yourLevel_SelectedIndexChanged);
-            // 
-            // mapLevelBox
-            // 
-            this.mapLevelBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mapLevelBox.FormattingEnabled = true;
-            this.mapLevelBox.Location = new System.Drawing.Point(137, 3);
-            this.mapLevelBox.Name = "mapLevelBox";
-            this.mapLevelBox.Size = new System.Drawing.Size(128, 21);
-            this.mapLevelBox.TabIndex = 1;
-            this.mapLevelBox.SelectedIndexChanged += new System.EventHandler(this.mapLevel_SelectedIndexChanged);
             // 
             // Form1
             // 
