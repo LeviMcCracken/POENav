@@ -24,6 +24,7 @@ namespace nav
         string entryHumanString = "You have entered ";
         string entryAbsoluteString = "Entering area ";
         string areaName = "";
+        string characterName = "";
         int entryHumanStringLen;
         int entryAbsoluteStringLen;
         string mapFolder = "";
@@ -57,7 +58,8 @@ namespace nav
 
             logfileStr = Properties.Settings.Default.logFile;
             mapFolder = Properties.Settings.Default.mapFolder;
-            
+            characterName = Properties.Settings.Default.characterName;
+
             mapFolderLoc.Text = "Map folder Location: " + mapFolder;
             logFileLoc.Text = "Log file Location: " + logfileStr;
 
@@ -85,6 +87,8 @@ namespace nav
             yourLevelBox.DropDownStyle = ComboBoxStyle.DropDownList;
             mapLevelBox.DropDownStyle = ComboBoxStyle.DropDownList;
 
+            setCharacterLevel();
+
         }
 
         private void timer1_tick(object sender, System.EventArgs e)
@@ -95,7 +99,7 @@ namespace nav
                 // read 1024 bytes
                 byte[] bytes = new byte[1024];
                 var bytesRead = logFileStream.Read(bytes, 0, 1024);
-                lastReadLength += bytesRead; //TODO, what if this splits the string?
+                lastReadLength += bytesRead;
 
                 // Convert bytes to string
                 string s = Encoding.Default.GetString(bytes);
@@ -109,6 +113,7 @@ namespace nav
             if(mapFolder != "" && !mapFolderInit)
             {
                 initZoneLvl();
+                mapFolderInit = true;
             }
         }
 
@@ -126,11 +131,13 @@ namespace nav
                 int indexAbs = line.IndexOf(entryAbsoluteString);
                 if (indexAbs != -1)
                 {
-                    areaName = line.Substring(indexAbs + entryAbsoluteStringLen);
+                    areaName = line.Substring(indexAbs + entryAbsoluteStringLen).Trim();
                     absolute.Text = areaName;
                     displayMap(areaName, humanName);
                     setZoneLvl(areaName);
                 }
+                findLevel(line);
+                yourLevelBox.SelectedIndex = yourLevel;
             }
         }
 
@@ -141,29 +148,36 @@ namespace nav
                 if (area.Item1 == areaName)
                 {
                     mapLevel = area.Item2;
+                    mapLevelBox.SelectedIndex = mapLevel;
                 }
             }
         }
 
         private void initZoneLvl()
         { 
-            string localMapFolder = makeStringLegal(mapFolder + @"zoneLevel.csv");
+            string localMapFolder = makeStringLegal(mapFolder + @"\zoneLevel.csv");
 
             string line = "";
-            StreamReader file = new StreamReader(localMapFolder);
-            while ((line = file.ReadLine()) != null)
+            using (StreamReader file = new StreamReader(localMapFolder))
             {
-                string[] partsOfLine = line.Split(',');
-                for (int i = 0; i < partsOfLine.Length; i++)
+                while ((line = file.ReadLine()) != null)
                 {
-                    partsOfLine[i] = partsOfLine[i].Trim();
+                    string[] partsOfLine = line.Split(',');
+
+                    if (partsOfLine.Length >= 2)
+                    {
+                        for (int i = 0; i < partsOfLine.Length; i++)
+                        {
+                            partsOfLine[i] = partsOfLine[i].Trim();
+                        }
+
+                        int parsedNum = 0;
+                        Int32.TryParse(partsOfLine[1], out parsedNum);
+                        Tuple<string, int> areaEntry = new Tuple<string, int>(partsOfLine[0], parsedNum);
+
+                        areaLevels.Add(areaEntry);
+                    }
                 }
-
-                int parsedNum = 0;
-                Int32.TryParse(partsOfLine[1], out parsedNum);
-                Tuple<string, int> areaEntry = new Tuple<string, int>(partsOfLine[0], parsedNum);
-
-                areaLevels.Add(areaEntry);
             }
         }
 
@@ -270,7 +284,7 @@ namespace nav
 
                 logFileLoc.Text = "Log file Location: " + logfileStr;
 
-                Properties.Settings.Default["logFile"] = logfileStr;
+                Properties.Settings.Default.logFile = logfileStr;
                 Properties.Settings.Default.Save();
             }
         }
@@ -283,17 +297,18 @@ namespace nav
 
             mapFolderLoc.Text = "Map folder Location: " + mapFolder;
 
-            Properties.Settings.Default["mapFolder"] = mapFolder;
+            Properties.Settings.Default.mapFolder = mapFolder;
             Properties.Settings.Default.Save();
         }
 
-        private void yourLevel_SelectedIndexChanged(object sender, EventArgs e)
+        private void yourLevelBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             yourLevel = yourLevelBox.SelectedIndex;
             redrawLevelTable();
         }
 
-        private void mapLevel_SelectedIndexChanged(object sender, EventArgs e)
+
+        private void mapLevelBox_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             mapLevel = mapLevelBox.SelectedIndex;
             redrawLevelTable();
@@ -301,7 +316,7 @@ namespace nav
             bool found = false;
             foreach (Tuple<string, int> area in areaLevels)
             {
-                if(area.Item1 == areaName)
+                if(area.Item1 == areaName.Trim())
                 {
                     found = true;
                 }
@@ -311,9 +326,10 @@ namespace nav
                 Tuple<string, int> newEntry = new Tuple<String, int>(areaName, mapLevel);
                 areaLevels.Add(newEntry);
 
-                using (StreamWriter outputFile = new StreamWriter(mapFolder + @"zoneLevel.csv", true))
+                using (StreamWriter outputFile = new StreamWriter(mapFolder + @"\zoneLevel.csv", true))
                 {
-                    outputFile.WriteLine(areaName + "," + mapLevel);
+                    string s = areaName.Trim() + "," + mapLevel;
+                    outputFile.WriteLine(s);
                 }
             }
 #endif
@@ -326,6 +342,7 @@ namespace nav
             int safeZone = (int)Math.Floor((double)(3 + (yourLevel / 16)));
 
             int shownRow = 0;
+            rowHighlight = -1;
 
             for (int r = 0; r < 100; r++)
             {
@@ -333,7 +350,10 @@ namespace nav
                 TextBox tableLevel = new TextBox();
                 tableLevel.Dock = DockStyle.Fill;
                 int monsterLevel = r + 1;
-                if (monsterLevel == mapLevel) { rowHighlight = shownRow; }
+                if (monsterLevel == mapLevel) {
+                    rowHighlight = shownRow;
+                    levelTable.CellPaint += levelTable_CellPaint;
+                }
                 tableLevel.Text = (monsterLevel).ToString();
 
                 TextBox xpMultiBox = new TextBox();
@@ -354,8 +374,6 @@ namespace nav
                     shownRow++;
                 }
             }
-
-            levelTable.CellPaint += levelTable_CellPaint;
         }
 
         void levelTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
@@ -433,6 +451,67 @@ namespace nav
                     }
                 }
             }
-        }        
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            timer2.Stop();
+            timer2.Start();
+        }
+
+        string str1 = "";
+        string str2 = "";
+        private void setCharacterLevel()
+        {
+            if (logFileStream != null)
+            {
+                logFileStream.Seek(0, SeekOrigin.Begin);
+
+                int fileIndex = 0;
+                while (logFileStream.Length > fileIndex)
+                {
+                    // read 1024 bytes
+                    byte[] bytes = new byte[1024];
+                    var bytesRead = logFileStream.Read(bytes, 0, 1024);
+                    fileIndex += bytesRead;
+
+                    // Convert bytes to string
+                    str1 = str2;
+                    str2 = Encoding.Default.GetString(bytes);
+                    string s = str1 + str2;
+
+                  findLevel(s);
+                }
+                yourLevelBox.SelectedIndex = yourLevel;
+            }
+        }
+
+        private void findLevel(string s)
+        {
+            int indexName = s.LastIndexOf(characterName);
+            int indexLevel = s.IndexOf("is now level");
+            if (indexName != -1 && indexLevel != -1 && indexLevel < 2000)
+            {
+                s = s.Substring(indexLevel + 13).Trim();
+                int index = s.IndexOf("\r");
+                if (index > 0)
+                {
+                    s = s.Substring(0, index).Trim();
+                }
+
+                Int32.TryParse(s, out yourLevel);
+            }
+        }
+
+        private void timer2_Tick_1(object sender, EventArgs e)
+        {
+            timer2.Stop();
+
+            characterName = textBox1.Text;
+            Properties.Settings.Default.characterName = characterName;
+            Properties.Settings.Default.Save();
+            setCharacterLevel();
+
+        }
     }
 }

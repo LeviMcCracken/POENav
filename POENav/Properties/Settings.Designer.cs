@@ -46,5 +46,17 @@ namespace nav.Properties {
                 this["mapFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string characterName {
+            get {
+                return ((string)(this["characterName"]));
+            }
+            set {
+                this["characterName"] = value;
+            }
+        }
     }
 }
