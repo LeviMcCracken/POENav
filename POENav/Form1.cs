@@ -17,7 +17,7 @@ using System.Windows.Forms;
 
 namespace nav
 {
-    public partial class Form1 : Form
+    public partial class POENavForm : Form
     {
 
         string logfileStr = "";
@@ -40,7 +40,7 @@ namespace nav
         long lastReadLength;
         FileStream logFileStream;
 
-        public Form1()
+        public POENavForm()
         {
             InitializeComponent();
 
@@ -173,7 +173,7 @@ namespace nav
 
         private void initZoneLvl()
         { 
-            string localMapFolder = makeStringLegal(mapFolder + @"\zoneLevel.csv");
+            string localMapFolder = mapFolder.Trim() + @"\zoneLevel.csv";
 
             string line = "";
             using (StreamReader file = new StreamReader(localMapFolder))
@@ -201,7 +201,7 @@ namespace nav
 
         private void displayMap(string areaName, string humanName)
         {
-            string localMapFolder = makeStringLegal(mapFolder + @"\" + areaName);
+            string localMapFolder = mapFolder.Trim() + @"\" + areaName.Trim();
 
             if (Directory.Exists(localMapFolder))
             {
@@ -290,18 +290,6 @@ namespace nav
             mapsTable.Controls.Add(pb, 0, 0);
         }
 
-        private string makeStringLegal(string s)
-        {
-            string invalid = new string(Path.GetInvalidPathChars());
-            
-            foreach (char c in invalid)
-            {
-                s = s.Replace(c.ToString(), "");
-            }
-
-            return s;
-        }
-
         private void logFileLoc_Click(object sender, EventArgs e)
         {
             OpenFileDialog file = new OpenFileDialog();
@@ -324,7 +312,7 @@ namespace nav
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             DialogResult folder = fbd.ShowDialog();
-            mapFolder = makeStringLegal(fbd.SelectedPath.ToString());
+            mapFolder = fbd.SelectedPath.ToString().Trim();
 
             mapFolderLoc.Text = mapFolderDispText + mapFolder;
 
@@ -403,7 +391,7 @@ namespace nav
                 int monsterLevel = r + 1;
                 if (monsterLevel == mapLevel)
                 {
-                    rowHighlight = shownRow;
+                    rowHighlight = shownRow + 1;
                     levelTable.CellPaint += levelTable_CellPaint;
                 }
 
@@ -491,9 +479,24 @@ namespace nav
             return bw;
         }
 
+        public string[] WriteSafeReadAllLines(String path)
+        {
+            using (var csv = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var sr = new StreamReader(csv))
+            {
+                List<string> file = new List<string>();
+                while (!sr.EndOfStream)
+                {
+                    file.Add(sr.ReadLine());
+                }
+
+                return file.ToArray();
+            }
+        }
+
         private void setCharacterLevel()
         {
-            string[] lines = File.ReadAllLines(logfileStr);
+            string[] lines = WriteSafeReadAllLines(logfileStr);
 
             for (int i = lines.Length - 1 ; i >= 0; i--)
             {

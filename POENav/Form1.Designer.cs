@@ -1,6 +1,6 @@
 ﻿namespace nav
 {
-    partial class Form1
+    partial class POENavForm
     {
         /// <summary>
         /// Required designer variable.
