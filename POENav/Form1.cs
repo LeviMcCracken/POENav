@@ -23,6 +23,9 @@ namespace nav
         string logfileStr = "";
         string entryHumanString = "You have entered ";
         string entryAbsoluteString = "Entering area ";
+
+        string mapFolderDispText = "Map folder Location: ";
+        string logFileDispText = "Log file Location: ";
         string areaName = "";
         string characterName = "";
         int entryHumanStringLen;
@@ -41,71 +44,63 @@ namespace nav
         {
             InitializeComponent();
 
-            areaLevels = new List<Tuple<string, int>>();            
-            levelTable.ColumnCount = 2;
-            levelTable.RowCount = 100;
-
-            TableLayoutRowStyleCollection styles = levelTable.RowStyles;
-            foreach (RowStyle style in styles)
-            {
-                // Set the row height to 20 pixels.
-                style.SizeType = SizeType.Absolute;
-                style.Height = 20;
-            }
+            areaLevels = new List<Tuple<string, int>>();
 
             entryHumanStringLen = entryHumanString.Length;
             entryAbsoluteStringLen = entryAbsoluteString.Length;
 
-            logfileStr = Properties.Settings.Default.logFile;
-            mapFolder = Properties.Settings.Default.mapFolder;
-            characterName = Properties.Settings.Default.characterName;
+            retrieveSettings();
+            
+            mapFolderLoc.Text = mapFolderDispText + mapFolder;
+            logFileLoc.Text = logFileDispText + logfileStr;
 
-            mapFolderLoc.Text = "Map folder Location: " + mapFolder;
-            logFileLoc.Text = "Log file Location: " + logfileStr;
-
-            // Set to 1 second.  
-            timer1.Interval = 1000;
-            timer1.Tick += new EventHandler(timer1_tick);
-
-            // Enable timer. 
-            timer1.Enabled = true;
-
-            var yourLevels = new List<int>();
-            var mapLevels = new List<int>();
-            for (int i = 0; i <= 100; i++)
-            {
-                yourLevels.Add(i);
-                mapLevels.Add(i);
-            }
-
-            mapLevelBox.DataSource = mapLevels;
-            mapLevelBox.SelectedIndex = mapLevel;
-            yourLevelBox.DataSource = yourLevels;
-            yourLevelBox.SelectedIndex = yourLevel;
+            setupLogTimer();
+            setupLevelDropdown(yourLevelBox);
+            setupLevelDropdown(mapLevelBox);
 
             // make it readonly
             yourLevelBox.DropDownStyle = ComboBoxStyle.DropDownList;
             mapLevelBox.DropDownStyle = ComboBoxStyle.DropDownList;
 
+            characterNameBox.Text = characterName;
             setCharacterLevel();
-
         }
 
-        private void timer1_tick(object sender, System.EventArgs e)
+        private void retrieveSettings()
         {
-            if (logFileStream != null) {
-                logFileStream.Seek(lastReadLength, SeekOrigin.Begin);
+            logfileStr = Properties.Settings.Default.logFile;
+            mapFolder = Properties.Settings.Default.mapFolder;
+            characterName = Properties.Settings.Default.characterName;
+        }
 
-                // read 1024 bytes
-                byte[] bytes = new byte[1024];
-                var bytesRead = logFileStream.Read(bytes, 0, 1024);
-                lastReadLength += bytesRead;
+        private void setupLevelDropdown(ComboBox box)
+        {
+            var levels = new List<int>();
 
-                // Convert bytes to string
-                string s = Encoding.Default.GetString(bytes);
+            for (int i = 0; i <= 100; i++)
+            {
+                levels.Add(i);
+            }
 
+            box.DataSource = levels;
+            box.SelectedIndex = yourLevel;
+        }
+
+        private void setupLogTimer()
+        {
+            CheckLogForUpdatesTimer.Interval = 1000;
+            CheckLogForUpdatesTimer.Tick += new EventHandler(CheckLogForUpdatesTimer_Tick);
+            CheckLogForUpdatesTimer.Enabled = true;
+        }
+
+        private void CheckLogForUpdatesTimer_Tick(object sender, EventArgs e)
+        {
+            if (logFileStream != null)
+            {
+                string s = getNewStringsInLog();
                 parseLogSnippet(s);
-            }else if(logfileStr != ""){
+            }
+            else if(logfileStr != ""){
                 logFileStream = File.Open(logfileStr, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 lastReadLength = logFileStream.Length;
             }
@@ -115,6 +110,20 @@ namespace nav
                 initZoneLvl();
                 mapFolderInit = true;
             }
+        }
+
+        private string getNewStringsInLog()
+        {
+            logFileStream.Seek(lastReadLength, SeekOrigin.Begin);
+
+            // read 1024 bytes
+            byte[] bytes = new byte[1024];
+            var bytesRead = logFileStream.Read(bytes, 0, 1024);
+            lastReadLength += bytesRead;
+
+            // Convert bytes to string
+            string s = Encoding.Default.GetString(bytes);
+            return s;
         }
 
         private void parseLogSnippet(string s)
@@ -143,13 +152,22 @@ namespace nav
 
         private void setZoneLvl(string areaName)
         {
+            bool found = false;
             foreach (Tuple<string, int> area in areaLevels)
             {
                 if (area.Item1 == areaName)
                 {
                     mapLevel = area.Item2;
                     mapLevelBox.SelectedIndex = mapLevel;
+                    found = true;
+                    errors.Text = "";
+                    errors.BackColor = Color.DarkGray;
                 }
+            }
+            if (!found)
+            {
+                errors.BackColor = Color.Red;
+                errors.Text = "Set Zone Level";
             }
         }
 
@@ -189,69 +207,87 @@ namespace nav
             {
                 try
                 {
-                    
-                    richTextBox1.Text = "";
+                    mapPhotosLocationsBox.Text = "";
+                    mapPhotosLocationsBox.BackColor = Color.DarkGray;
                     string[] files = Directory.GetFiles(localMapFolder);
 
-                    tableLayoutPanel1.Controls.Clear();
-
-                    tableLayoutPanel1.ColumnCount = 1;
-                    tableLayoutPanel1.RowCount = 1;
+                    clearMaps();
 
                     if (files.Length > 0)
                     {
-
-                        int columns = (int)Math.Ceiling(Math.Sqrt(files.Length));
-                        int rows = columns;
-                        if ((rows - 1) * columns >= files.Length) { rows--; }
-                        if (rows == 0) { rows = 1; }
-
-                        tableLayoutPanel1.ColumnCount = columns;
-                        tableLayoutPanel1.RowCount = rows;
-
-
-                        int i = 0;
-                        foreach (string file in files)
-                        {
-                            richTextBox1.Text += file.ToString() + "\n";
-                            PictureBox pb = new PictureBox();
-                            pb.ImageLocation = file;
-                            pb.SizeMode = PictureBoxSizeMode.Zoom;
-                            pb.Dock = DockStyle.Fill;
-
-                            tableLayoutPanel1.Controls.Add(pb, i % columns, i / columns);
-                            i++;
-                        }
-
+                        displayMapPhotos(files);
                     }
                     else
                     {
-                        richTextBox1.Text += "No Maps Found For This Area" + "\n";
-                        richTextBox1.Text += mapFolder + @"\NoMapFound.png";
-                        PictureBox pb = new PictureBox();
-                        pb.ImageLocation = mapFolder + @"\NoMapFound.png";
-                        pb.SizeMode = PictureBoxSizeMode.Zoom;
-                        pb.Dock = DockStyle.Fill;
-
-                        tableLayoutPanel1.Controls.Add(pb, 0, 0);
+                        displayNoMaps();
                     }
                 }
                 catch (Exception e)
                 {
-                    richTextBox1.Text = e.ToString();
-                    richTextBox1.Text += "\n" + localMapFolder;
+                    mapPhotosLocationsBox.BackColor = Color.Red;
+                    mapPhotosLocationsBox.Text += "No map folder for area: " + localMapFolder;
                 }
             }
             else
             {
-#if INITTREE
-                using (StreamWriter outputFile = new StreamWriter(mapFolder + "\\nameMap.txt", true))
-                {
-                    outputFile.WriteLine(areaName + " " + humanName);
-                }
-                Directory.CreateDirectory(localMapFolder);
-#endif
+                displayNoMaps();
             }
+        }
+
+        private void displayMapPhotos(string[] files)
+        {
+            setRowsAndColumnsMapPhotos(files.Length);
+
+            int i = 0;
+            foreach (string file in files)
+            {
+                mapPhotosLocationsBox.Text += file.ToString() + "\n";
+                addMapPhoto(i, file);
+                i++;
+            }
+        }
+
+        private void addMapPhoto(int i, string file)
+        {
+            PictureBox pb = new PictureBox();
+            pb.ImageLocation = file;
+            pb.SizeMode = PictureBoxSizeMode.Zoom;
+            pb.Dock = DockStyle.Fill;
+
+            mapsTable.Controls.Add(pb, i % mapsTable.ColumnCount, i / mapsTable.ColumnCount);
+        }
+
+        private void setRowsAndColumnsMapPhotos(int count)
+        {
+            int columns = (int)Math.Ceiling(Math.Sqrt(count));
+            int rows = columns;
+            if ((rows - 1) * columns >= count) { rows--; }
+            if (rows == 0) { rows = 1; }
+
+            mapsTable.ColumnCount = columns;
+            mapsTable.RowCount = rows;
+        }
+
+        private void clearMaps()
+        {
+            mapsTable.Controls.Clear();
+
+            mapsTable.ColumnCount = 1;
+            mapsTable.RowCount = 1;
+        }
+
+        private void displayNoMaps()
+        {
+            clearMaps();
+
+            mapPhotosLocationsBox.Text = "No Maps Found For This Area" + "\n";
+            mapPhotosLocationsBox.Text += mapFolder + @"\NoMapFound.png";
+            PictureBox pb = new PictureBox();
+            pb.ImageLocation = mapFolder + @"\NoMapFound.png";
+            pb.SizeMode = PictureBoxSizeMode.Zoom;
+            pb.Dock = DockStyle.Fill;
+
+            mapsTable.Controls.Add(pb, 0, 0);
         }
 
         private string makeStringLegal(string s)
@@ -265,11 +301,6 @@ namespace nav
 
             return s;
         }
-        
-        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
 
         private void logFileLoc_Click(object sender, EventArgs e)
         {
@@ -282,7 +313,7 @@ namespace nav
                 logFileStream = File.Open(logfileStr, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 lastReadLength = logFileStream.Length;
 
-                logFileLoc.Text = "Log file Location: " + logfileStr;
+                logFileLoc.Text = logFileDispText + logfileStr;
 
                 Properties.Settings.Default.logFile = logfileStr;
                 Properties.Settings.Default.Save();
@@ -295,7 +326,7 @@ namespace nav
             DialogResult folder = fbd.ShowDialog();
             mapFolder = makeStringLegal(fbd.SelectedPath.ToString());
 
-            mapFolderLoc.Text = "Map folder Location: " + mapFolder;
+            mapFolderLoc.Text = mapFolderDispText + mapFolder;
 
             Properties.Settings.Default.mapFolder = mapFolder;
             Properties.Settings.Default.Save();
@@ -312,68 +343,123 @@ namespace nav
         {
             mapLevel = mapLevelBox.SelectedIndex;
             redrawLevelTable();
+
+            errors.Text = "";
+            errors.BackColor = Color.DarkGray;
 #if ZONELEVELINIT
-            bool found = false;
+            saveZoneLevel();
+#endif
+        }
+
+        private void saveZoneLevel()
+        {
+            if (!isZoneLevelKnown())
+            {
+                saveZoneLevelLocally();
+                saveZoneLevelToFile();
+            }
+        }
+
+        private void saveZoneLevelToFile()
+        {
+            using (StreamWriter outputFile = new StreamWriter(mapFolder + @"\zoneLevel.csv", true))
+            {
+                string s = areaName.Trim() + "," + mapLevel;
+                outputFile.WriteLine(s);
+            }
+        }
+
+        private void saveZoneLevelLocally()
+        {
+            Tuple<string, int> newEntry = new Tuple<String, int>(areaName, mapLevel);
+            areaLevels.Add(newEntry);
+        }
+
+        private bool isZoneLevelKnown()
+        {
             foreach (Tuple<string, int> area in areaLevels)
             {
-                if(area.Item1 == areaName.Trim())
+                if (area.Item1 == areaName.Trim())
                 {
-                    found = true;
+                    return true; ;
                 }
             }
-            if (!found)
-            {
-                Tuple<string, int> newEntry = new Tuple<String, int>(areaName, mapLevel);
-                areaLevels.Add(newEntry);
-
-                using (StreamWriter outputFile = new StreamWriter(mapFolder + @"\zoneLevel.csv", true))
-                {
-                    string s = areaName.Trim() + "," + mapLevel;
-                    outputFile.WriteLine(s);
-                }
-            }
-#endif
+            return false;
         }
 
         private void redrawLevelTable()
         {
             levelTable.Controls.Clear();
+            levelTable.ColumnCount = 1;
+            levelTable.RowCount = 0;
 
             int safeZone = (int)Math.Floor((double)(3 + (yourLevel / 16)));
 
-            int shownRow = 0;
+            int shownRow = -1;
             rowHighlight = -1;
 
             for (int r = 0; r < 100; r++)
             {
-
-                TextBox tableLevel = new TextBox();
-                tableLevel.Dock = DockStyle.Fill;
                 int monsterLevel = r + 1;
-                if (monsterLevel == mapLevel) {
+                if (monsterLevel == mapLevel)
+                {
                     rowHighlight = shownRow;
                     levelTable.CellPaint += levelTable_CellPaint;
                 }
-                tableLevel.Text = (monsterLevel).ToString();
-
-                TextBox xpMultiBox = new TextBox();
-                xpMultiBox.Dock = DockStyle.Fill;
 
                 int effectiveDiff = Math.Abs(yourLevel - monsterLevel) - safeZone;
                 if (effectiveDiff < 0) effectiveDiff = 0;
                 double xpMult = Math.Pow(((yourLevel + 5) / (yourLevel + 5 + Math.Pow(effectiveDiff, 2.5))), 1.5);
-                xpMultiBox.Text = Math.Round(xpMult*100, 2).ToString()+"%";
 
-                int colorVal = (int)Math.Floor(255 * xpMult);
-                tableLevel.BackColor = Color.FromArgb(255 - colorVal, colorVal, 0);
-                xpMultiBox.BackColor = Color.FromArgb(255 - colorVal, colorVal, 0);
+                if (xpMult > 0.20)
+                {
+                    int colorVal = (int)Math.Floor(255 * xpMult);
 
-                if (xpMult > 0.20) {
-                    levelTable.Controls.Add(tableLevel, 0, shownRow);
-                    levelTable.Controls.Add(xpMultiBox, 1, shownRow);
+                    TableLayoutPanel expTLB = new TableLayoutPanel();
+                    expTLB.Dock = DockStyle.Fill;
+
+                    expTLB.Controls.Add(tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
+                    expTLB.Controls.Add(xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
+
+                    levelTable.Controls.Add(expTLB, 0, shownRow + 1);
                     shownRow++;
+                    levelTable.RowCount++;
                 }
             }
+
+            setStyleLevelTable(levelTable);
+        }
+
+        private static void setStyleLevelTable(TableLayoutPanel localLevelTable)
+        {
+            TableLayoutRowStyleCollection styles = localLevelTable.RowStyles;
+            foreach (RowStyle style in styles)
+            {
+                style.SizeType = SizeType.Absolute;
+                style.Height = 30;
+            }
+        }
+
+        private static TextBox xpMultiBoxCreator(double xpMult, int colorVal)
+        {
+            TextBox xpMultiBox = new TextBox();
+            xpMultiBox.Dock = DockStyle.Fill;
+            xpMultiBox.Width = 140;
+            xpMultiBox.Text = Math.Round(xpMult * 100, 2).ToString() + "%";
+
+            xpMultiBox.BackColor = Color.FromArgb(255 - colorVal, colorVal, 0);
+            return xpMultiBox;
+        }
+
+        private static TextBox tableLevelCreator(int monsterLevel, int colorVal)
+        {
+            TextBox tableLevel = new TextBox();
+            tableLevel.Dock = DockStyle.Fill;
+            tableLevel.Width = 140;
+            tableLevel.Text = (monsterLevel).ToString();
+
+            tableLevel.BackColor = Color.FromArgb(255 - colorVal, colorVal, 0);
+            return tableLevel;
         }
 
         void levelTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
@@ -382,6 +468,68 @@ namespace nav
                 e.Graphics.DrawRectangle(new Pen(Color.Red, 3), e.CellBounds);
         }
 
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            timer2.Stop();
+            timer2.Start();
+        }
+
+        string str1 = "";
+        string str2 = "";
+        private void setCharacterLevel()
+        {
+            if (logFileStream != null)
+            {
+                logFileStream.Seek(0, SeekOrigin.Begin);
+
+                int fileIndex = 0;
+                while (logFileStream.Length > fileIndex)
+                {
+                    // read 1024 bytes
+                    byte[] bytes = new byte[1024];
+                    var bytesRead = logFileStream.Read(bytes, 0, 1024);
+                    fileIndex += bytesRead;
+
+                    // Convert bytes to string
+                    str1 = str2;
+                    str2 = Encoding.Default.GetString(bytes);
+                    string s = str1 + str2;
+
+                    findLevel(s);
+                }
+                yourLevelBox.SelectedIndex = yourLevel;
+            }
+        }
+
+        private void findLevel(string s)
+        {
+            int indexName = s.LastIndexOf(characterName);
+            int indexLevel = s.IndexOf("is now level");
+            if (indexName != -1 && indexLevel != -1 && indexLevel < 2000)
+            {
+                s = s.Substring(indexLevel + 13).Trim();
+                int index = s.IndexOf("\r");
+                if (index > 0)
+                {
+                    s = s.Substring(0, index).Trim();
+                }
+
+                Int32.TryParse(s, out yourLevel);
+            }
+        }
+
+        private void timer2_Tick_1(object sender, EventArgs e)
+        {
+            timer2.Stop();
+
+            characterName = characterNameBox.Text;
+            Properties.Settings.Default.characterName = characterName;
+            Properties.Settings.Default.Save();
+            setCharacterLevel();
+
+        }
+
+        /*TODO
         //copied from https://msdn.microsoft.com/en-us/library/ms404263.aspx
         //https://refactorsaurusrex.com/post/2015/how-to-host-a-clickonce-installer-on-github/
         private void updateButton_Click(object sender, EventArgs e)
@@ -452,66 +600,6 @@ namespace nav
                 }
             }
         }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            timer2.Stop();
-            timer2.Start();
-        }
-
-        string str1 = "";
-        string str2 = "";
-        private void setCharacterLevel()
-        {
-            if (logFileStream != null)
-            {
-                logFileStream.Seek(0, SeekOrigin.Begin);
-
-                int fileIndex = 0;
-                while (logFileStream.Length > fileIndex)
-                {
-                    // read 1024 bytes
-                    byte[] bytes = new byte[1024];
-                    var bytesRead = logFileStream.Read(bytes, 0, 1024);
-                    fileIndex += bytesRead;
-
-                    // Convert bytes to string
-                    str1 = str2;
-                    str2 = Encoding.Default.GetString(bytes);
-                    string s = str1 + str2;
-
-                  findLevel(s);
-                }
-                yourLevelBox.SelectedIndex = yourLevel;
-            }
-        }
-
-        private void findLevel(string s)
-        {
-            int indexName = s.LastIndexOf(characterName);
-            int indexLevel = s.IndexOf("is now level");
-            if (indexName != -1 && indexLevel != -1 && indexLevel < 2000)
-            {
-                s = s.Substring(indexLevel + 13).Trim();
-                int index = s.IndexOf("\r");
-                if (index > 0)
-                {
-                    s = s.Substring(0, index).Trim();
-                }
-
-                Int32.TryParse(s, out yourLevel);
-            }
-        }
-
-        private void timer2_Tick_1(object sender, EventArgs e)
-        {
-            timer2.Stop();
-
-            characterName = textBox1.Text;
-            Properties.Settings.Default.characterName = characterName;
-            Properties.Settings.Default.Save();
-            setCharacterLevel();
-
-        }
+        */
     }
 }

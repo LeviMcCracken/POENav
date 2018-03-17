@@ -1,73 +1,0 @@
-2_9_3 TheVastiriDesert
-1_1_7_1 TheLowerPrison
-1_1_6 TheClimb
-1_1_4_1 TheSubmergedPassage
-1_1_4_0 TheFloodedDepths
-2_9_town Highgate
-1_1_8 PrisonersGate
-1_1_7_2 TheUpperPrison
-1_1_9 TheShipGraveyard
-1_1_2 TheCoast
-1_1_2a TheTidalIsland
-1_2_14_2 TheCaverns
-1_2_6_1 TheChamberofSinsLevel1
-1_2_6_2 TheChamberofSinsLevel2
-1_2_12 TheWetlands
-1_2_11 TheVaalRuins
-1_2_9 TheWesternForest
-1_2_10 TheWeaversChambers
-1_3_7 
-1_3_3_1 TheCrematorium
-1_3_9 
-1_3_13 TheEbonyBarracks
-1_3_14_1 TheLunarisTempleLevel1
-1_3_14_2 
-1_3_15 TheImperialGardens
-1_3_5 TheMarketplace
-1_3_10_1 TheSewers
-1_3_2 TheSlums
-1_3_8_1 TheSolarisTempleLevel1
-1_3_8_2 TheSolarisTempleLevel2
-1_4_town Highgate
-1_4_7 TheAscent
-1_4_3_3 
-1_4_6_1 TheBellyoftheBeastLevel1
-1_4_3_1 TheMinesLevel1
-1_4_2 
-1_4_6_3 TheHarvest
-1_4_4_3 KaomsStronghold
-1_4_4_1 KaomsDream
-1_5_5 
-1_5_1 TheSlavePens
-1_5_town 
-1_5_2 TheControlBlocks
-1_5_3b 
-1_5_6 TheOssuary
-1_5_7 TheReliquary
-1_5_4b TheTorchedCourts
-2_6_15 
-2_6_14 
-2_6_13 TheCavernofAnger
-2_6_2 
-2_6_6 TheRidge
-2_6_5 TheKaruiFortress
-2_6_7_1 TheLowerPrison
-2_6_4 TheMudFlats
-2_6_8 PrisonersGate
-2_6_10 TheRiverways
-2_7_5_1 TheChamberofSinsLevel1
-2_7_5_2 TheChamberofSinsLevel2
-2_7_4 TheCrypt
-2_7_2 TheCrossroads
-2_7_6 TheDen
-2_7_11 
-2_8_9 TheGrainGate
-2_8_7_1_ TheLunarisTempleLevel1
-2_8_7_2 TheLunarisTempleLevel2
-2_8_6 TheLunarisConcourse
-2_8_2_2 DoedresCesspool
-2_8_8 
-2_8_12_1 
-2_8_12_2 TheSolarisTempleLevel2
-2_9_5 TheFoothills
-2_9_6 TheBoilingLake
