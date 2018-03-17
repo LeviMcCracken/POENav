@@ -63,7 +63,7 @@ namespace nav
             mapLevelBox.DropDownStyle = ComboBoxStyle.DropDownList;
 
             characterNameBox.Text = characterName;
-            setCharacterLevel();
+            startBackgroundLogScraper();
         }
 
         private void retrieveSettings()
@@ -75,7 +75,7 @@ namespace nav
 
         private void setupLevelDropdown(ComboBox box)
         {
-            var levels = new List<int>();
+            List<int> levels = new List<int>();
 
             for (int i = 0; i <= 100; i++)
             {
@@ -184,16 +184,16 @@ namespace nav
 
                     if (partsOfLine.Length >= 2)
                     {
-                        for (int i = 0; i < partsOfLine.Length; i++)
-                        {
-                            partsOfLine[i] = partsOfLine[i].Trim();
+                        partsOfLine[0] = partsOfLine[0].Trim();
+                        partsOfLine[1] = partsOfLine[1].Trim();
+
+                        if (partsOfLine[0] != "") {
+                            int parsedNum = 0;
+                            Int32.TryParse(partsOfLine[1], out parsedNum);
+                            Tuple<string, int> areaEntry = new Tuple<string, int>(partsOfLine[0], parsedNum);
+
+                            areaLevels.Add(areaEntry);
                         }
-
-                        int parsedNum = 0;
-                        Int32.TryParse(partsOfLine[1], out parsedNum);
-                        Tuple<string, int> areaEntry = new Tuple<string, int>(partsOfLine[0], parsedNum);
-
-                        areaLevels.Add(areaEntry);
                     }
                 }
             }
@@ -470,40 +470,44 @@ namespace nav
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            timer2.Stop();
-            timer2.Start();
+            startBackgroundLogScraper();
         }
 
-        string str1 = "";
-        string str2 = "";
+        private void startBackgroundLogScraper()
+        {
+            if (backgroundLogScraper.IsBusy == true)
+            {
+                backgroundLogScraper.CancelAsync();
+            }
+            backgroundLogScraper = CreateBackgroundWorker();
+            backgroundLogScraper.RunWorkerAsync();
+        }
+
+        private BackgroundWorker CreateBackgroundWorker()
+        {
+            var bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.DoWork += backgroundLogScraper_DoWork;
+            return bw;
+        }
+
         private void setCharacterLevel()
         {
-            if (logFileStream != null)
+            string[] lines = File.ReadAllLines(logfileStr);
+
+            for (int i = lines.Length - 1 ; i >= 0; i--)
             {
-                logFileStream.Seek(0, SeekOrigin.Begin);
-
-                int fileIndex = 0;
-                while (logFileStream.Length > fileIndex)
+                if (findLevel(lines[i]))
                 {
-                    // read 1024 bytes
-                    byte[] bytes = new byte[1024];
-                    var bytesRead = logFileStream.Read(bytes, 0, 1024);
-                    fileIndex += bytesRead;
-
-                    // Convert bytes to string
-                    str1 = str2;
-                    str2 = Encoding.Default.GetString(bytes);
-                    string s = str1 + str2;
-
-                    findLevel(s);
+                    break;
                 }
-                yourLevelBox.SelectedIndex = yourLevel;
             }
+            yourLevelBox.Invoke(new Action(() => yourLevelBox.SelectedIndex = yourLevel));
         }
 
-        private void findLevel(string s)
+        private bool findLevel(string s)
         {
-            int indexName = s.LastIndexOf(characterName);
+            int indexName = s.LastIndexOf(characterName + " ");
             int indexLevel = s.IndexOf("is now level");
             if (indexName != -1 && indexLevel != -1 && indexLevel < 2000)
             {
@@ -514,19 +518,17 @@ namespace nav
                     s = s.Substring(0, index).Trim();
                 }
 
-                Int32.TryParse(s, out yourLevel);
+                return Int32.TryParse(s, out yourLevel);
             }
+            return false;
         }
 
-        private void timer2_Tick_1(object sender, EventArgs e)
+        private void backgroundLogScraper_DoWork(object sender, DoWorkEventArgs e)
         {
-            timer2.Stop();
-
             characterName = characterNameBox.Text;
             Properties.Settings.Default.characterName = characterName;
             Properties.Settings.Default.Save();
             setCharacterLevel();
-
         }
 
         /*TODO

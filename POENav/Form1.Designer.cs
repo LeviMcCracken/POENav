@@ -51,7 +51,8 @@
             this.levelTable = new System.Windows.Forms.TableLayoutPanel();
             this.absolute = new System.Windows.Forms.Label();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.backgroundLogScraper = new System.ComponentModel.BackgroundWorker();
+            this.backgroundLevelTableBuilder = new System.ComponentModel.BackgroundWorker();
             this.tableLayoutPanelRoot.SuspendLayout();
             this.leftColumnTable.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -123,11 +124,11 @@
             this.leftColumnTable.Size = new System.Drawing.Size(300, 630);
             this.leftColumnTable.TabIndex = 1;
             // 
-            // richTextBox1
+            // mapPhotosLocationsBox
             // 
             this.mapPhotosLocationsBox.AutoSize = true;
             this.mapPhotosLocationsBox.Location = new System.Drawing.Point(3, 160);
-            this.mapPhotosLocationsBox.Name = "richTextBox1";
+            this.mapPhotosLocationsBox.Name = "mapPhotosLocationsBox";
             this.mapPhotosLocationsBox.Size = new System.Drawing.Size(64, 13);
             this.mapPhotosLocationsBox.TabIndex = 12;
             this.mapPhotosLocationsBox.Text = "Map images";
@@ -411,10 +412,14 @@
             this.tableLayoutPanel4.Size = new System.Drawing.Size(274, 308);
             this.tableLayoutPanel4.TabIndex = 7;
             // 
-            // timer2
+            // backgroundLogScraper
             // 
-            this.timer2.Interval = 1000;
-            this.timer2.Tick += new System.EventHandler(this.timer2_Tick_1);
+            this.backgroundLogScraper.WorkerSupportsCancellation = true;
+            this.backgroundLogScraper.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundLogScraper_DoWork);
+            // 
+            // backgroundLevelTableBuilder
+            // 
+            this.backgroundLevelTableBuilder.WorkerSupportsCancellation = true;
             // 
             // Form1
             // 
@@ -460,9 +465,10 @@
         private System.Windows.Forms.ComboBox mapLevelBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel levelTable;
-        private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Label mapPhotosLocationsBox;
         private System.Windows.Forms.Label absolute;
+        private System.ComponentModel.BackgroundWorker backgroundLogScraper;
+        private System.ComponentModel.BackgroundWorker backgroundLevelTableBuilder;
     }
 }
 
