@@ -176,6 +176,7 @@
             this.logFileLoc.Size = new System.Drawing.Size(91, 13);
             this.logFileLoc.TabIndex = 10;
             this.logFileLoc.Text = "Log File Location:";
+            this.logFileLoc.Click += new System.EventHandler(this.logFileLoc_Click_1);
             // 
             // mapFolderLoc
             // 
@@ -185,6 +186,7 @@
             this.mapFolderLoc.Size = new System.Drawing.Size(107, 13);
             this.mapFolderLoc.TabIndex = 10;
             this.mapFolderLoc.Text = "Map Folder Location:";
+            this.mapFolderLoc.Click += new System.EventHandler(this.mapFolderLoc_Click);
             // 
             // errors
             // 
@@ -421,7 +423,7 @@
             // 
             this.backgroundLevelTableBuilder.WorkerSupportsCancellation = true;
             // 
-            // Form1
+            // POENavForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -429,7 +431,7 @@
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1433, 630);
             this.Controls.Add(this.tableLayoutPanelRoot);
-            this.Name = "Form1";
+            this.Name = "POENavForm";
             this.Text = "POENav";
             this.tableLayoutPanelRoot.ResumeLayout(false);
             this.tableLayoutPanelRoot.PerformLayout();

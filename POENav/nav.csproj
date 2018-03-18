@@ -51,10 +51,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>AC9C51F022E266F599F6B9D051448E311ED2554C</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>2217AAE8920574D7239B875F47396664AB737000</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>nav_4_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>nav_5_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -78,6 +78,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GuiHelper.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="TODO.cs" />
     <Compile Include="FileReader.cs" />
     <Compile Include="FileWriter.cs" />
     <Compile Include="Form1.cs">
@@ -88,6 +91,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="ZoneLevel.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -104,6 +109,7 @@
     <None Include="nav_2_TemporaryKey.pfx" />
     <None Include="nav_3_TemporaryKey.pfx" />
     <None Include="nav_4_TemporaryKey.pfx" />
+    <None Include="nav_5_TemporaryKey.pfx" />
     <None Include="nav_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
