@@ -8,6 +8,8 @@ namespace nav
         {
             int indexName = s.LastIndexOf(characterName.Trim() + " ");
             int indexLevel = s.IndexOf("is now level");
+
+            int ret = -1;
             if (indexName != -1 && indexLevel != -1 && indexLevel < 2000)
             {
                 s = s.Substring(indexLevel + 13).Trim();
@@ -16,12 +18,10 @@ namespace nav
                 {
                     s = s.Substring(0, index).Trim();
                 }
-
-                int ret = -1;
                 Int32.TryParse(s, out ret);
                 return ret;
             }
-            return -1;
+            return ret;
         }
     }
 }

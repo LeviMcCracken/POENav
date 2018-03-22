@@ -11,6 +11,11 @@ namespace nav
         FileStream logFileStream;
         long lastReadLength = 0;
 
+        public FileReader(string logfileStr)
+        {
+            updateLogFile(logfileStr);
+        }
+
         private static string[] writeSafeReadAllLines(String path)
         {
             using (var csv = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -26,7 +31,7 @@ namespace nav
             }
         }
 
-        public static int getCharacterLevel(string characterName, string logfileStr)
+        public int getCharacterLevel(string characterName, string logfileStr)
         {
             string[] lines = writeSafeReadAllLines(logfileStr);
 

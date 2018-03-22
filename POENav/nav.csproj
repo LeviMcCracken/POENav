@@ -51,10 +51,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>2217AAE8920574D7239B875F47396664AB737000</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>7DC6299E62C1D981E8E140C31B6943E3A6FCB020</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>nav_5_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>nav_6_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -110,6 +110,7 @@
     <None Include="nav_3_TemporaryKey.pfx" />
     <None Include="nav_4_TemporaryKey.pfx" />
     <None Include="nav_5_TemporaryKey.pfx" />
+    <None Include="nav_6_TemporaryKey.pfx" />
     <None Include="nav_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

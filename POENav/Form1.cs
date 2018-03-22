@@ -36,13 +36,13 @@ namespace nav
         {
             InitializeComponent();
 
-            zl = new ZoneLevel(mapFolder);
-            fr = new FileReader();
 
             entryHumanStringLen = entryHumanString.Length;
             entryAbsoluteStringLen = entryAbsoluteString.Length;
 
             retrieveSettings();
+            zl = new ZoneLevel(mapFolder);
+            fr = new FileReader(logfileStr);
             
             mapFolderLoc.Text = mapFolderDispText + mapFolder;
             logFileLoc.Text = logFileDispText + logfileStr;
@@ -63,7 +63,6 @@ namespace nav
         {
             logfileStr = Properties.Settings.Default.logFile;
             mapFolder = Properties.Settings.Default.mapFolder;
-            zl.updateMapFolder(mapFolder);
             characterName = Properties.Settings.Default.characterName;
         }
 
@@ -95,25 +94,32 @@ namespace nav
 
         private void parseLogSnippet(string s)
         {
-            string[] lines = s.Split('\n');
-            string humanName = "";
-            foreach (string line in lines)
+            if (s.Length != 0)
             {
-                int index = line.IndexOf(entryHumanString);
-                if (index != -1)
+                string[] lines = s.Split('\n');
+                string humanName = "";
+                foreach (string line in lines)
                 {
-                    humanName = line.Substring(index + entryHumanStringLen).Replace(" ", "").Replace("'", "").Replace(".", "");
+                    int index = line.IndexOf(entryHumanString);
+                    if (index != -1)
+                    {
+                        humanName = line.Substring(index + entryHumanStringLen).Replace(" ", "").Replace("'", "").Replace(".", "");
+                    }
+                    int indexAbs = line.IndexOf(entryAbsoluteString);
+                    if (indexAbs != -1)
+                    {
+                        areaName = line.Substring(indexAbs + entryAbsoluteStringLen).Trim();
+                        mapName.Text = areaName + "\n" + humanName;
+                        displayMap(areaName);
+                        setZoneLvlGui(areaName);
+                    }
+                    int lvl = Parser.findLevel(line, characterName);
+                    if (lvl != -1)
+                    {
+                        yourLevel = lvl;
+                        yourLevelBox.SelectedIndex = yourLevel;
+                    }
                 }
-                int indexAbs = line.IndexOf(entryAbsoluteString);
-                if (indexAbs != -1)
-                {
-                    areaName = line.Substring(indexAbs + entryAbsoluteStringLen).Trim();
-                    absolute.Text = areaName;
-                    displayMap(areaName, humanName);
-                    setZoneLvlGui(areaName);
-                }
-                Parser.findLevel(line, characterName);
-                yourLevelBox.SelectedIndex = yourLevel;
             }
         }
 
@@ -135,7 +141,7 @@ namespace nav
         }
 
 
-        private void displayMap(string areaName, string humanName)
+        private void displayMap(string areaName)
         {
             string localMapFolder = mapFolder.Trim() + @"\" + areaName.Trim();
 
@@ -327,7 +333,7 @@ namespace nav
             Properties.Settings.Default.characterName = characterName;
             Properties.Settings.Default.Save();
 
-            yourLevelBox.Invoke(new Action(() => yourLevelBox.SelectedIndex = FileReader.getCharacterLevel(characterName, logfileStr)));
+            yourLevelBox.Invoke(new Action(() => yourLevelBox.SelectedIndex = fr.getCharacterLevel(characterName, logfileStr)));
         }
     }
 }

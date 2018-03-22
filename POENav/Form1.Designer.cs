@@ -49,7 +49,7 @@
             this.mapLevelBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.levelTable = new System.Windows.Forms.TableLayoutPanel();
-            this.absolute = new System.Windows.Forms.Label();
+            this.mapName = new System.Windows.Forms.Label();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.backgroundLogScraper = new System.ComponentModel.BackgroundWorker();
             this.backgroundLevelTableBuilder = new System.ComponentModel.BackgroundWorker();
@@ -107,7 +107,7 @@
             this.leftColumnTable.Controls.Add(this.errors, 0, 5);
             this.leftColumnTable.Controls.Add(this.Level, 0, 6);
             this.leftColumnTable.Controls.Add(this.levelTable, 0, 7);
-            this.leftColumnTable.Controls.Add(this.absolute, 0, 3);
+            this.leftColumnTable.Controls.Add(this.mapName, 0, 3);
             this.leftColumnTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.leftColumnTable.Location = new System.Drawing.Point(0, 0);
             this.leftColumnTable.Margin = new System.Windows.Forms.Padding(0);
@@ -391,14 +391,14 @@
             this.levelTable.Size = new System.Drawing.Size(300, 250);
             this.levelTable.TabIndex = 1;
             // 
-            // absolute
+            // mapName
             // 
-            this.absolute.AutoSize = true;
-            this.absolute.Location = new System.Drawing.Point(3, 130);
-            this.absolute.Name = "absolute";
-            this.absolute.Size = new System.Drawing.Size(57, 13);
-            this.absolute.TabIndex = 11;
-            this.absolute.Text = "Map name";
+            this.mapName.AutoSize = true;
+            this.mapName.Location = new System.Drawing.Point(3, 130);
+            this.mapName.Name = "mapName";
+            this.mapName.Size = new System.Drawing.Size(57, 13);
+            this.mapName.TabIndex = 11;
+            this.mapName.Text = "Map name";
             // 
             // tableLayoutPanel4
             // 
@@ -468,7 +468,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel levelTable;
         private System.Windows.Forms.Label mapPhotosLocationsBox;
-        private System.Windows.Forms.Label absolute;
+        private System.Windows.Forms.Label mapName;
         private System.ComponentModel.BackgroundWorker backgroundLogScraper;
         private System.ComponentModel.BackgroundWorker backgroundLevelTableBuilder;
     }
