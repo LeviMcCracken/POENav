@@ -1,9 +1,9 @@
 ﻿//#define INITTREE
 #define ZONELEVELINIT
+#define INITMAPSFOLDER
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -16,14 +16,12 @@ namespace nav
 
         string logfileStr = "";
         string entryHumanString = "You have entered ";
-        string entryAbsoluteString = "Entering area ";
 
         string mapFolderDispText = "Map folder Location: ";
         string logFileDispText = "Log file Location: ";
         string areaName = "";
         string characterName = "";
         int entryHumanStringLen;
-        int entryAbsoluteStringLen;
         string mapFolder = "";
         int rowHighlight = 0;
         int yourLevel = 0;
@@ -32,13 +30,13 @@ namespace nav
         ZoneLevel zl;
         FileReader fr;
 
+        System.Threading.Thread charNameThread;
+
         public POENavForm()
         {
             InitializeComponent();
 
-
             entryHumanStringLen = entryHumanString.Length;
-            entryAbsoluteStringLen = entryAbsoluteString.Length;
 
             retrieveSettings();
             zl = new ZoneLevel(mapFolder);
@@ -50,13 +48,14 @@ namespace nav
             setupLogTimer();
             setupLevelDropdown(yourLevelBox);
             setupLevelDropdown(mapLevelBox);
-
-            // make it readonly
+            
             yourLevelBox.DropDownStyle = ComboBoxStyle.DropDownList;
             mapLevelBox.DropDownStyle = ComboBoxStyle.DropDownList;
 
             characterNameBox.Text = characterName;
-            startBackgroundLogScraper();
+
+            charNameThread = new System.Threading.Thread(startBackgroundLogScraper);
+            charNameThread.Start();
         }
 
         private void retrieveSettings()
@@ -104,14 +103,10 @@ namespace nav
                     if (index != -1)
                     {
                         humanName = line.Substring(index + entryHumanStringLen).Replace(" ", "").Replace("'", "").Replace(".", "");
-                    }
-                    int indexAbs = line.IndexOf(entryAbsoluteString);
-                    if (indexAbs != -1)
-                    {
-                        areaName = line.Substring(indexAbs + entryAbsoluteStringLen).Trim();
-                        mapName.Text = areaName + "\n" + humanName;
-                        displayMap(areaName);
-                        setZoneLvlGui(areaName);
+                        mapName.Text = humanName;
+                        areaName = humanName;
+                        displayMap(humanName);
+                        setZoneLvlGui(humanName);
                     }
                     int lvl = Parser.findLevel(line, characterName);
                     if (lvl != -1)
@@ -168,10 +163,14 @@ namespace nav
                 {
                     mapPhotosLocationsBox.BackColor = Color.Red;
                     mapPhotosLocationsBox.Text += "No map folder for area: " + localMapFolder;
+
                 }
             }
             else
             {
+#if INITMAPSFOLDER
+                Directory.CreateDirectory(localMapFolder);
+#endif
                 displayNoMaps();
             }
         }
@@ -272,7 +271,13 @@ namespace nav
 
             int shownRow = -1;
             rowHighlight = -1;
+            bool lowerFound = false;
+            bool lowerElipsisFound = false;
+            bool upperElipsisFound = false;
+            bool firstPass = true;
+            Tuple<bool, string, double>[] levels = new Tuple<bool, string, double>[101];
 
+            //create array
             for (int r = 0; r < 100; r++)
             {
                 int monsterLevel = r + 1;
@@ -282,27 +287,90 @@ namespace nav
 
                 if (xpMult > 0.20)
                 {
-                    if (monsterLevel == mapLevel)
+                    if (yourLevel == monsterLevel)
                     {
-                        rowHighlight = shownRow + 1;
+                        levels[r] = new Tuple<bool, string, double>(true, monsterLevel.ToString(), xpMult);
+                    }
+                    if (xpMult == 1 && yourLevel > monsterLevel)
+                    {
+                        if (lowerFound && !lowerElipsisFound)
+                        {
+                            levels[r] = new Tuple<bool, string, double>(true, "...", xpMult);
+                            lowerElipsisFound = true;
+                        }
+                        else if (lowerElipsisFound)
+                        {
+                            levels[r] = new Tuple<bool, string, double>(false, monsterLevel.ToString(), xpMult);
+                        }
+                        else
+                        {
+                            levels[r] = new Tuple<bool, string, double>(true, monsterLevel.ToString(), xpMult);
+                            lowerFound = true;
+                        }
+                    }
+                    else if (xpMult == 1 && yourLevel < monsterLevel)
+                    {
+                        levels[r] = new Tuple<bool, string, double>(true, monsterLevel.ToString(), xpMult);
+                        if (yourLevel - monsterLevel != 0 && r != 0)
+                        {
+                            if (upperElipsisFound)
+                            {
+                                if (!firstPass) {
+                                    levels[r - 1] = new Tuple<bool, string, double>(false, monsterLevel.ToString(), xpMult);
+                                }
+                                firstPass = false;
+                            }
+                            else
+                            {
+                                levels[r] = new Tuple<bool, string, double>(true, "...", xpMult);
+                                upperElipsisFound = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        levels[r] = new Tuple<bool, string, double>(true, monsterLevel.ToString(), xpMult);
+                    }
+                }
+                else
+                {
+                    levels[r] = new Tuple<bool, string, double>(false, "", 0);
+                }
+            }
+
+            //show table
+            for (int r = 0; r < 100; r++)
+            {
+                if(levels[r].Item1)
+                {
+                    shownRow = showRow(shownRow, levels[r].Item2, levels[r].Item3);
+
+
+                    if (r+1 == mapLevel)
+                    {
+                        rowHighlight = shownRow;
                         levelTable.CellPaint += levelTable_CellPaint;
                     }
-
-                    int colorVal = (int)Math.Floor(255 * xpMult);
-
-                    TableLayoutPanel expTLB = new TableLayoutPanel();
-                    expTLB.Dock = DockStyle.Fill;
-
-                    expTLB.Controls.Add(GuiHelper.tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
-                    expTLB.Controls.Add(GuiHelper.xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
-
-                    levelTable.Controls.Add(expTLB, 0, shownRow + 1);
-                    shownRow++;
-                    levelTable.RowCount++;
                 }
             }
 
             GuiHelper.setStyleLevelTable(ref levelTable);
+        }
+
+        private int showRow(int shownRow, string monsterLevel, double xpMult)
+        {
+            int colorVal = (int)Math.Floor(255 * xpMult);
+
+            TableLayoutPanel expTLB = new TableLayoutPanel();
+            expTLB.Dock = DockStyle.Fill;
+
+            expTLB.Controls.Add(GuiHelper.tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
+            expTLB.Controls.Add(GuiHelper.xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
+
+            levelTable.Controls.Add(expTLB, 0, shownRow + 1);
+            shownRow++;
+            levelTable.RowCount++;
+            return shownRow;
         }
 
         void levelTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
@@ -311,29 +379,29 @@ namespace nav
                 e.Graphics.DrawRectangle(new Pen(Color.Red, 3), e.CellBounds);
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void characterNameBox_TextChanged(object sender, EventArgs e)
         {
-            startBackgroundLogScraper();
+            if (charNameThread != null)
+            {
+                charNameThread.Abort();
+            }
+            charNameThread = new System.Threading.Thread(startBackgroundLogScraper);
+            charNameThread.Start();
         }
 
         private void startBackgroundLogScraper()
         {
-            if (backgroundLogScraper.IsBusy == true)
+            try
             {
-                backgroundLogScraper.CancelAsync();
+                characterName = characterNameBox.Text;
+                Properties.Settings.Default.characterName = characterName;
+                Properties.Settings.Default.Save();
+
+                yourLevelBox.Invoke(new Action(() => yourLevelBox.SelectedIndex = fr.getCharacterLevel(characterName, logfileStr)));
+            }catch(Exception e)
+            {
+
             }
-            backgroundLogScraper = Util.createBackgroundWorker();
-            backgroundLogScraper.DoWork += backgroundLogScraper_DoWork;
-            backgroundLogScraper.RunWorkerAsync();
-        }
-
-        private void backgroundLogScraper_DoWork(object sender, DoWorkEventArgs e)
-        {
-            characterName = characterNameBox.Text;
-            Properties.Settings.Default.characterName = characterName;
-            Properties.Settings.Default.Save();
-
-            yourLevelBox.Invoke(new Action(() => yourLevelBox.SelectedIndex = fr.getCharacterLevel(characterName, logfileStr)));
         }
     }
 }

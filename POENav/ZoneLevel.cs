@@ -1,9 +1,11 @@
-﻿using System;
+﻿
+#define ZONELEVELINIT
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+
 
 namespace nav
 {
@@ -24,7 +26,7 @@ namespace nav
             int mapLevel = -1;
             foreach (Tuple<string, int> area in zoneLevels)
             {
-                if (area.Item1 == areaName)
+                if (area.Item1 == areaName.Trim())
                 {
                     mapLevel = area.Item2;
                 }
@@ -50,11 +52,18 @@ namespace nav
 
         public void saveZoneLevel(string areaName, int mapLevel)
         {
-            if (!isZoneLevelKnown(areaName))
+            if (areaName != "" && !isZoneLevelKnown(areaName))
             {
-                saveZoneLevelLocally(areaName, mapLevel);
-                saveZoneLevelToFile(areaName, mapLevel);
+                saveZoneLevelLocally(areaName.Trim(), mapLevel);
+                saveZoneLevelToFile(areaName.Trim(), mapLevel);
             }
+#if ZONELEVELINIT
+            else if (areaName != "")
+            {
+
+            }
+#endif
+
         }
 
         private void saveZoneLevelToFile(string areaName, int mapLevel)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 namespace nav
 {
@@ -10,13 +11,13 @@ namespace nav
         static string zoneLevelFileName = @"\zoneLevel.csv";
         FileStream logFileStream;
         long lastReadLength = 0;
-
+        
         public FileReader(string logfileStr)
         {
             updateLogFile(logfileStr);
         }
-
-        private static string[] writeSafeReadAllLines(String path)
+        
+        private static List<string> writeSafeReadAllLines(String path)
         {
             using (var csv = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var sr = new StreamReader(csv))
@@ -27,16 +28,16 @@ namespace nav
                     file.Add(sr.ReadLine());
                 }
 
-                return file.ToArray();
+                return file;
             }
         }
 
         public int getCharacterLevel(string characterName, string logfileStr)
         {
-            string[] lines = writeSafeReadAllLines(logfileStr);
-
+            List<string> lines = writeSafeReadAllLines(logfileStr);
+            
             int lvl = 0;
-            for (int i = lines.Length - 1; i >= 0; i--)
+            for (int i = lines.Count - 1; i >= 0; i--)
             {
                 lvl = Parser.findLevel(lines[i], characterName);
                 if (lvl != -1)

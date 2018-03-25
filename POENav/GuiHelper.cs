@@ -6,12 +6,12 @@ namespace nav
 {
     class GuiHelper
     {
-        public static TextBox tableLevelCreator(int monsterLevel, int colorVal)
+        public static TextBox tableLevelCreator(string monsterLevel, int colorVal)
         {
             TextBox tableLevel = new TextBox();
             tableLevel.Dock = DockStyle.Fill;
             tableLevel.Width = 140;
-            tableLevel.Text = (monsterLevel).ToString();
+            tableLevel.Text = monsterLevel;
 
             tableLevel.BackColor = Color.FromArgb(255 - colorVal, colorVal, 0);
             return tableLevel;
@@ -22,7 +22,7 @@ namespace nav
             TextBox xpMultiBox = new TextBox();
             xpMultiBox.Dock = DockStyle.Fill;
             xpMultiBox.Width = 140;
-            xpMultiBox.Text = System.Math.Round(xpMult * 100, 2).ToString() + "%";
+            xpMultiBox.Text = Math.Round(xpMult * 100, 2).ToString() + "%";
 
             xpMultiBox.BackColor = Color.FromArgb(255 - colorVal, colorVal, 0);
             return xpMultiBox;

@@ -51,7 +51,6 @@
             this.levelTable = new System.Windows.Forms.TableLayoutPanel();
             this.mapName = new System.Windows.Forms.Label();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.backgroundLogScraper = new System.ComponentModel.BackgroundWorker();
             this.backgroundLevelTableBuilder = new System.ComponentModel.BackgroundWorker();
             this.tableLayoutPanelRoot.SuspendLayout();
             this.leftColumnTable.SuspendLayout();
@@ -166,7 +165,7 @@
             this.characterNameBox.Name = "characterNameBox";
             this.characterNameBox.Size = new System.Drawing.Size(194, 20);
             this.characterNameBox.TabIndex = 1;
-            this.characterNameBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.characterNameBox.TextChanged += new System.EventHandler(this.characterNameBox_TextChanged);
             // 
             // logFileLoc
             // 
@@ -414,11 +413,6 @@
             this.tableLayoutPanel4.Size = new System.Drawing.Size(274, 308);
             this.tableLayoutPanel4.TabIndex = 7;
             // 
-            // backgroundLogScraper
-            // 
-            this.backgroundLogScraper.WorkerSupportsCancellation = true;
-            this.backgroundLogScraper.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundLogScraper_DoWork);
-            // 
             // backgroundLevelTableBuilder
             // 
             this.backgroundLevelTableBuilder.WorkerSupportsCancellation = true;
@@ -469,7 +463,6 @@
         private System.Windows.Forms.TableLayoutPanel levelTable;
         private System.Windows.Forms.Label mapPhotosLocationsBox;
         private System.Windows.Forms.Label mapName;
-        private System.ComponentModel.BackgroundWorker backgroundLogScraper;
         private System.ComponentModel.BackgroundWorker backgroundLevelTableBuilder;
     }
 }
