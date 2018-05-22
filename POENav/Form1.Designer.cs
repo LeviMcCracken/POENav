@@ -412,7 +412,7 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel4.Size = new System.Drawing.Size(274, 308);
             this.tableLayoutPanel4.TabIndex = 7;
-            // 
+            //
             // backgroundLevelTableBuilder
             // 
             this.backgroundLevelTableBuilder.WorkerSupportsCancellation = true;

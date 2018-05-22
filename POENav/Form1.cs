@@ -271,13 +271,7 @@ namespace nav
 
             int shownRow = -1;
             rowHighlight = -1;
-            bool lowerFound = false;
-            bool lowerElipsisFound = false;
-            bool upperElipsisFound = false;
-            bool firstPass = true;
-            Tuple<bool, string, double>[] levels = new Tuple<bool, string, double>[101];
 
-            //create array
             for (int r = 0; r < 100; r++)
             {
                 int monsterLevel = r + 1;
@@ -287,90 +281,27 @@ namespace nav
 
                 if (xpMult > 0.20)
                 {
-                    if (yourLevel == monsterLevel)
+                    if (monsterLevel == mapLevel)
                     {
-                        levels[r] = new Tuple<bool, string, double>(true, monsterLevel.ToString(), xpMult);
-                    }
-                    if (xpMult == 1 && yourLevel > monsterLevel)
-                    {
-                        if (lowerFound && !lowerElipsisFound)
-                        {
-                            levels[r] = new Tuple<bool, string, double>(true, "...", xpMult);
-                            lowerElipsisFound = true;
-                        }
-                        else if (lowerElipsisFound)
-                        {
-                            levels[r] = new Tuple<bool, string, double>(false, monsterLevel.ToString(), xpMult);
-                        }
-                        else
-                        {
-                            levels[r] = new Tuple<bool, string, double>(true, monsterLevel.ToString(), xpMult);
-                            lowerFound = true;
-                        }
-                    }
-                    else if (xpMult == 1 && yourLevel < monsterLevel)
-                    {
-                        levels[r] = new Tuple<bool, string, double>(true, monsterLevel.ToString(), xpMult);
-                        if (yourLevel - monsterLevel != 0 && r != 0)
-                        {
-                            if (upperElipsisFound)
-                            {
-                                if (!firstPass) {
-                                    levels[r - 1] = new Tuple<bool, string, double>(false, monsterLevel.ToString(), xpMult);
-                                }
-                                firstPass = false;
-                            }
-                            else
-                            {
-                                levels[r] = new Tuple<bool, string, double>(true, "...", xpMult);
-                                upperElipsisFound = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        levels[r] = new Tuple<bool, string, double>(true, monsterLevel.ToString(), xpMult);
-                    }
-                }
-                else
-                {
-                    levels[r] = new Tuple<bool, string, double>(false, "", 0);
-                }
-            }
-
-            //show table
-            for (int r = 0; r < 100; r++)
-            {
-                if(levels[r].Item1)
-                {
-                    shownRow = showRow(shownRow, levels[r].Item2, levels[r].Item3);
-
-
-                    if (r+1 == mapLevel)
-                    {
-                        rowHighlight = shownRow;
+                        rowHighlight = shownRow + 1;
                         levelTable.CellPaint += levelTable_CellPaint;
                     }
+
+                    int colorVal = (int)Math.Floor(255 * xpMult);
+
+                    TableLayoutPanel expTLB = new TableLayoutPanel();
+                    expTLB.Dock = DockStyle.Fill;
+
+                    expTLB.Controls.Add(GuiHelper.tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
+                    expTLB.Controls.Add(GuiHelper.xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
+
+                    levelTable.Controls.Add(expTLB, 0, shownRow + 1);
+                    shownRow++;
+                    levelTable.RowCount++;
                 }
             }
 
             GuiHelper.setStyleLevelTable(ref levelTable);
-        }
-
-        private int showRow(int shownRow, string monsterLevel, double xpMult)
-        {
-            int colorVal = (int)Math.Floor(255 * xpMult);
-
-            TableLayoutPanel expTLB = new TableLayoutPanel();
-            expTLB.Dock = DockStyle.Fill;
-
-            expTLB.Controls.Add(GuiHelper.tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
-            expTLB.Controls.Add(GuiHelper.xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
-
-            levelTable.Controls.Add(expTLB, 0, shownRow + 1);
-            shownRow++;
-            levelTable.RowCount++;
-            return shownRow;
         }
 
         void levelTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
