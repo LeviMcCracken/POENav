@@ -11,12 +11,18 @@ namespace nav
         static string zoneLevelFileName = @"\zoneLevel.csv";
         FileStream logFileStream;
         long lastReadLength = 0;
-        
-        public FileReader(string logfileStr)
+        string logfileStr = "";
+        string logFileDispText = "";
+        System.Windows.Forms.Label logFileLoc;
+
+        public FileReader(string logfileStrIn, string logFileDispTextIn, System.Windows.Forms.Label logFileLocIn)
         {
+            logfileStr = logfileStrIn;
+            logFileDispText = logFileDispTextIn;
+            logFileLoc = logFileLocIn;
             updateLogFile(logfileStr);
         }
-        
+
         private static List<string> writeSafeReadAllLines(String path)
         {
             using (var csv = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -68,8 +74,32 @@ namespace nav
             return s;
         }
 
+        public string logFileLocMethod()
+        {
+            OpenFileDialog file = new OpenFileDialog();
+
+            if (file.ShowDialog() == DialogResult.OK)
+            {
+                logfileStr = file.FileName;
+
+                logFileLoc.Text = logFileDispText + logfileStr;
+
+                Properties.Settings.Default.logFile = logfileStr;
+                Properties.Settings.Default.Save();
+
+                return logfileStr;
+            }
+            return "";
+        }
+
         public void updateLogFile(string logfileStr)
         {
+            while(logfileStr == "")
+            {
+                MessageBox.Show("Select POE log file location.");
+                logfileStr = logFileLocMethod();
+                logFileStream = File.Open(logfileStr, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            }
             logFileStream = File.Open(logfileStr, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             lastReadLength = logFileStream.Length;
         }

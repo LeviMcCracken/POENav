@@ -51,16 +51,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>7DC6299E62C1D981E8E140C31B6943E3A6FCB020</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>900CD3FAB292855BE9CFA1E35102A03C079AFD88</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>nav_6_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>nav_7_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -111,7 +118,9 @@
     <None Include="nav_4_TemporaryKey.pfx" />
     <None Include="nav_5_TemporaryKey.pfx" />
     <None Include="nav_6_TemporaryKey.pfx" />
+    <None Include="nav_7_TemporaryKey.pfx" />
     <None Include="nav_TemporaryKey.pfx" />
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

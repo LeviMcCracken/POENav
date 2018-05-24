@@ -40,7 +40,7 @@ namespace nav
 
             retrieveSettings();
             zl = new ZoneLevel(mapFolder);
-            fr = new FileReader(logfileStr);
+            fr = new FileReader(logfileStr,logFileDispText, logFileLoc);
             
             mapFolderLoc.Text = mapFolderDispText + mapFolder;
             logFileLoc.Text = logFileDispText + logfileStr;
@@ -215,18 +215,7 @@ namespace nav
 
         private void logFileLoc_Click_1(object sender, EventArgs e)
         {
-
-            OpenFileDialog file = new OpenFileDialog();
-
-            if (file.ShowDialog() == DialogResult.OK)
-            {
-                logfileStr = file.FileName;
-
-                logFileLoc.Text = logFileDispText + logfileStr;
-
-                Properties.Settings.Default.logFile = logfileStr;
-                Properties.Settings.Default.Save();
-            }
+            fr.logFileLocMethod();
         }
 
         private void mapFolderLoc_Click(object sender, EventArgs e)
