@@ -26,7 +26,7 @@ namespace nav
             int mapLevel = -1;
             foreach (Tuple<string, int, int> area in zoneLevels)
             {
-                if (area.Item1 == areaName.Trim() || area.Item3 == partNumber)
+                if (area.Item1 == areaName.Trim() && area.Item3 == partNumber)
                 {
                     mapLevel = area.Item2;
                 }
@@ -53,15 +53,12 @@ namespace nav
         public void saveZoneLevel(string areaName, int mapLevel, int partNumber)
         {
 #if ZONELEVELINIT
-            if (!string.IsNullOrEmpty(areaName))
-#else
-            if (areaName != "" && !isZoneLevelKnown(areaName))
-#endif
+            if (!string.IsNullOrEmpty(areaName) && !isZoneLevelKnown(areaName, partNumber))
             {
                 saveZoneLevelLocally(areaName.Trim(), mapLevel, partNumber);
                 saveZoneLevelToFile(areaName.Trim(), mapLevel, partNumber);
             }
-
+#endif
         }
 
         private void saveZoneLevelToFile(string areaName, int mapLevel, int partNumber)
@@ -82,7 +79,7 @@ namespace nav
             zoneLevels.Add(newEntry);
         }
 
-        private bool isZoneLevelKnown(string areaName, int partNumber)
+        public bool isZoneLevelKnown(string areaName, int partNumber)
         {
             foreach (Tuple<string, int, int> area in zoneLevels)
             {

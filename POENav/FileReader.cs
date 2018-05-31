@@ -94,7 +94,7 @@ namespace nav
 
         public void updateLogFile(string logfileStr)
         {
-            while(string.IsNullOrEmpty(logfileStr))
+            while (string.IsNullOrEmpty(logfileStr))
             {
                 MessageBox.Show("Select POE log file location.");
                 logfileStr = logFileLocMethod();
@@ -126,10 +126,11 @@ namespace nav
 
                         if (partsOfLine[0] != "")
                         {
+                            int parsedLevel = 0;
                             int parsedPart = 0;
-                            Int32.TryParse(partsOfLine[1], out parsedPart);
+                            Int32.TryParse(partsOfLine[1], out parsedLevel);
                             Int32.TryParse(partsOfLine[2], out parsedPart);
-                            Tuple<string, int, int> areaEntry = new Tuple<string, int, int>(partsOfLine[0], parsedPart, parsedPart);
+                            Tuple<string, int, int> areaEntry = new Tuple<string, int, int>(partsOfLine[0], parsedLevel, parsedPart);
 
                             areaLevels.Add(areaEntry);
                         }

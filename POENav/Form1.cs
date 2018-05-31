@@ -48,10 +48,12 @@ namespace nav
 
             setupLogTimer();
             setupLevelDropdown(yourLevelBox);
-            setupLevelDropdown(mapLevelBox);
-            
+            setupLevelDropdown(mapLevelBox1);
+            setupLevelDropdown(mapLevelBox2);
+
             yourLevelBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            mapLevelBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            mapLevelBox1.DropDownStyle = ComboBoxStyle.DropDownList;
+            mapLevelBox2.DropDownStyle = ComboBoxStyle.DropDownList;
 
             characterNameBox.Text = characterName;
 
@@ -134,14 +136,8 @@ namespace nav
             {
                 errors.Text = "";
                 errors.BackColor = Color.DarkGray;
-                if (levelTab.SelectedIndex == 0)
-                {
-                    mapLevelBox.SelectedIndex = mapLevel1;
-                }
-                else
-                {
-                    mapLevelBox.SelectedIndex = mapLevel2;
-                }
+                mapLevelBox1.SelectedIndex = mapLevel1;
+                mapLevelBox2.SelectedIndex = mapLevel2;
             }
         }
 
@@ -254,14 +250,8 @@ namespace nav
 
         private void mapLevelBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (levelTab.SelectedIndex == 0)
-            {
-                mapLevel1 = mapLevelBox.SelectedIndex;
-            }
-            else
-            {
-                mapLevel2 = mapLevelBox.SelectedIndex;
-            }
+            mapLevel1 = mapLevelBox1.SelectedIndex;
+            mapLevel2 = mapLevelBox2.SelectedIndex;
             redrawLevelTable();
 
             errors.Text = "";
@@ -302,7 +292,12 @@ namespace nav
 
                 if (xpMult > 0.20)
                 {
-                    if (monsterLevel == mapLevel1 || monsterLevel == mapLevel2)
+                    if (monsterLevel == mapLevel1)
+                    {
+                        rowHighlight = shownRow + 1;
+                        levelTable1.CellPaint += levelTable_CellPaint;
+                    }
+                    else if (monsterLevel == mapLevel2)
                     {
                         rowHighlight = shownRow + 1;
                         levelTable2.CellPaint += levelTable_CellPaint;
@@ -310,18 +305,32 @@ namespace nav
 
                     int colorVal = (int)Math.Floor(255 * xpMult);
 
-                    TableLayoutPanel expTLB = new TableLayoutPanel();
-                    expTLB.Dock = DockStyle.Fill;
+                    TableLayoutPanel expTLB1 = new TableLayoutPanel();
+                    expTLB1.Dock = DockStyle.Fill;
+                    expTLB1.Controls.Add(GuiHelper.tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
+                    expTLB1.Controls.Add(GuiHelper.xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
 
-                    expTLB.Controls.Add(GuiHelper.tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
-                    expTLB.Controls.Add(GuiHelper.xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
+                    TableLayoutPanel expTLB2 = new TableLayoutPanel();
+                    expTLB2.Dock = DockStyle.Fill;
+                    expTLB2.Controls.Add(GuiHelper.tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
+                    expTLB2.Controls.Add(GuiHelper.xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
 
-                    levelTable2.Controls.Add(expTLB, 0, shownRow + 1);
+
                     shownRow++;
-                    levelTable2.RowCount++;
+                    if (zl.isZoneLevelKnown(areaName,1))
+                    {
+                        levelTable1.Controls.Add(expTLB1, 0, shownRow + 1);
+                        levelTable1.RowCount++;
+                    }
+                    if(zl.isZoneLevelKnown(areaName, 2))
+                    {
+                        levelTable2.Controls.Add(expTLB2, 0, shownRow + 1);
+                        levelTable2.RowCount++;
+                    }
                 }
             }
 
+            GuiHelper.setStyleLevelTable(ref levelTable1);
             GuiHelper.setStyleLevelTable(ref levelTable2);
         }
 
