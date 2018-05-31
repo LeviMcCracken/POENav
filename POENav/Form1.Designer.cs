@@ -111,33 +111,34 @@
             // 
             this.leftColumnTable.ColumnCount = 1;
             this.leftColumnTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.leftColumnTable.Controls.Add(this.charNameBox);
-            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.leftColumnTable.Controls.Add(this.logFileLoc);
-            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.leftColumnTable.Controls.Add(this.mapFolderLoc);
-            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.leftColumnTable.Controls.Add(this.mapName);
-            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.leftColumnTable.Controls.Add(this.mapPhotosLocationsBox);
-            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.leftColumnTable.Controls.Add(this.errors);
-            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20));
             this.leftColumnTable.Controls.Add(this.lvlLabel);
-            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30));
             this.leftColumnTable.Controls.Add(this.yourLevelBox);
-            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100));
             this.leftColumnTable.Controls.Add(this.levelTab);
             this.leftColumnTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.leftColumnTable.Location = new System.Drawing.Point(0, 0);
             this.leftColumnTable.Margin = new System.Windows.Forms.Padding(0);
             this.leftColumnTable.Name = "leftColumnTable";
             this.leftColumnTable.RowCount = 10;
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.leftColumnTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.leftColumnTable.Size = new System.Drawing.Size(300, 630);
             this.leftColumnTable.TabIndex = 1;
             // 
-            // tableLayoutPanel5
+            // charNameBox
             // 
             this.charNameBox.ColumnCount = 2;
             this.charNameBox.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
@@ -147,7 +148,7 @@
             this.charNameBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.charNameBox.Location = new System.Drawing.Point(0, 0);
             this.charNameBox.Margin = new System.Windows.Forms.Padding(0);
-            this.charNameBox.Name = "tableLayoutPanel5";
+            this.charNameBox.Name = "charNameBox";
             this.charNameBox.RowCount = 1;
             this.charNameBox.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.charNameBox.Size = new System.Drawing.Size(300, 30);
@@ -234,7 +235,7 @@
             // 
             this.yourLevelBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.yourLevelBox.FormattingEnabled = true;
-            this.yourLevelBox.Location = new System.Drawing.Point(3, 383);
+            this.yourLevelBox.Location = new System.Drawing.Point(3, 303);
             this.yourLevelBox.Name = "yourLevelBox";
             this.yourLevelBox.Size = new System.Drawing.Size(294, 21);
             this.yourLevelBox.TabIndex = 2;
@@ -245,10 +246,10 @@
             this.levelTab.Controls.Add(this.p1t);
             this.levelTab.Controls.Add(this.p2t);
             this.levelTab.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.levelTab.Location = new System.Drawing.Point(3, 593);
+            this.levelTab.Location = new System.Drawing.Point(3, 333);
             this.levelTab.Name = "levelTab";
             this.levelTab.SelectedIndex = 0;
-            this.levelTab.Size = new System.Drawing.Size(294, 14);
+            this.levelTab.Size = new System.Drawing.Size(294, 274);
             this.levelTab.TabIndex = 13;
             // 
             // p1t
@@ -257,7 +258,7 @@
             this.p1t.Controls.Add(this.part1Tab);
             this.p1t.Location = new System.Drawing.Point(4, 22);
             this.p1t.Name = "p1t";
-            this.p1t.Size = new System.Drawing.Size(286, 0);
+            this.p1t.Size = new System.Drawing.Size(286, 248);
             this.p1t.TabIndex = 0;
             this.p1t.Text = "Part 1";
             // 
@@ -278,7 +279,7 @@
             this.part1Tab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.part1Tab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.part1Tab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.part1Tab.Size = new System.Drawing.Size(286, 0);
+            this.part1Tab.Size = new System.Drawing.Size(286, 248);
             this.part1Tab.TabIndex = 0;
             this.part1Tab.Text = "Part 1";
             // 
@@ -299,7 +300,7 @@
             this.mapLevelBox1.Name = "mapLevelBox1";
             this.mapLevelBox1.Size = new System.Drawing.Size(274, 21);
             this.mapLevelBox1.TabIndex = 2;
-            this.mapLevelBox1.SelectedIndexChanged += new System.EventHandler(this.mapLevelBox_SelectedIndexChanged);
+            this.mapLevelBox1.SelectedIndexChanged += new System.EventHandler(this.mapLevelBox1_SelectedIndexChanged);
             // 
             // monsterLvlLabel1
             // 
@@ -420,7 +421,7 @@
             this.levelTable1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.levelTable1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.levelTable1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.levelTable1.Size = new System.Drawing.Size(280, 20);
+            this.levelTable1.Size = new System.Drawing.Size(280, 172);
             this.levelTable1.TabIndex = 1;
             // 
             // p2t
@@ -429,7 +430,7 @@
             this.p2t.Controls.Add(this.part2Tab);
             this.p2t.Location = new System.Drawing.Point(4, 22);
             this.p2t.Name = "p2t";
-            this.p2t.Size = new System.Drawing.Size(286, 0);
+            this.p2t.Size = new System.Drawing.Size(286, 268);
             this.p2t.TabIndex = 1;
             this.p2t.Text = "Part 2";
             // 
@@ -450,7 +451,7 @@
             this.part2Tab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.part2Tab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.part2Tab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.part2Tab.Size = new System.Drawing.Size(286, 0);
+            this.part2Tab.Size = new System.Drawing.Size(286, 268);
             this.part2Tab.TabIndex = 1;
             this.part2Tab.Text = "Part 2";
             // 
@@ -471,7 +472,7 @@
             this.mapLevelBox2.Name = "mapLevelBox2";
             this.mapLevelBox2.Size = new System.Drawing.Size(274, 21);
             this.mapLevelBox2.TabIndex = 2;
-            this.mapLevelBox2.SelectedIndexChanged += new System.EventHandler(this.mapLevelBox_SelectedIndexChanged);
+            this.mapLevelBox2.SelectedIndexChanged += new System.EventHandler(this.mapLevelBox2_SelectedIndexChanged);
             // 
             // monsterLvlLabel2
             // 
@@ -592,7 +593,7 @@
             this.levelTable2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.levelTable2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.levelTable2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.levelTable2.Size = new System.Drawing.Size(280, 20);
+            this.levelTable2.Size = new System.Drawing.Size(280, 192);
             this.levelTable2.TabIndex = 1;
             // 
             // tableLayoutPanel4

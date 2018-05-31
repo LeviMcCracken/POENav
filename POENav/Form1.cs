@@ -23,7 +23,8 @@ namespace nav
         string characterName = "";
         int entryHumanStringLen;
         string mapFolder = "";
-        int rowHighlight = 0;
+        int rowHighlight1 = 0;
+        int rowHighlight2 = 0;
         int yourLevel = 0;
         int mapLevel1 = 0;
         int mapLevel2 = 0;
@@ -165,7 +166,7 @@ namespace nav
                         displayNoMaps();
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     mapPhotosLocationsBox.BackColor = Color.Red;
                     mapPhotosLocationsBox.Text += "No map folder for area: " + localMapFolder;
@@ -248,23 +249,27 @@ namespace nav
         }
 
 
-        private void mapLevelBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void mapLevelBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             mapLevel1 = mapLevelBox1.SelectedIndex;
+            redrawLevelTable();
+
+            errors.Text = "";
+            errors.BackColor = Color.DarkGray;
+#if ZONELEVELINIT
+            zl.saveZoneLevel(areaName, mapLevel1, 1);
+#endif
+        }
+
+        private void mapLevelBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
             mapLevel2 = mapLevelBox2.SelectedIndex;
             redrawLevelTable();
 
             errors.Text = "";
             errors.BackColor = Color.DarkGray;
 #if ZONELEVELINIT
-            if (levelTab.SelectedIndex == 0)
-            {
-                zl.saveZoneLevel(areaName, mapLevel1, 1);
-            }
-            else
-            {
-                zl.saveZoneLevel(areaName, mapLevel2, 2);
-            }
+            zl.saveZoneLevel(areaName, mapLevel2, 2);
 #endif
         }
 
@@ -281,7 +286,8 @@ namespace nav
             int safeZone = (int)Math.Floor((double)(3 + (yourLevel / 16)));
 
             int shownRow = -1;
-            rowHighlight = -1;
+            rowHighlight1 = -1;
+            rowHighlight2 = -1;
 
             for (int r = 0; r < 100; r++)
             {
@@ -294,13 +300,13 @@ namespace nav
                 {
                     if (monsterLevel == mapLevel1)
                     {
-                        rowHighlight = shownRow + 1;
-                        levelTable1.CellPaint += levelTable_CellPaint;
+                        rowHighlight1 = shownRow + 1;
+                        levelTable1.CellPaint += levelTable1_CellPaint;
                     }
                     else if (monsterLevel == mapLevel2)
                     {
-                        rowHighlight = shownRow + 1;
-                        levelTable2.CellPaint += levelTable_CellPaint;
+                        rowHighlight2 = shownRow + 1;
+                        levelTable2.CellPaint += levelTable2_CellPaint;
                     }
 
                     int colorVal = (int)Math.Floor(255 * xpMult);
@@ -315,18 +321,11 @@ namespace nav
                     expTLB2.Controls.Add(GuiHelper.tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
                     expTLB2.Controls.Add(GuiHelper.xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
 
-
                     shownRow++;
-                    if (zl.isZoneLevelKnown(areaName,1))
-                    {
-                        levelTable1.Controls.Add(expTLB1, 0, shownRow + 1);
-                        levelTable1.RowCount++;
-                    }
-                    if(zl.isZoneLevelKnown(areaName, 2))
-                    {
-                        levelTable2.Controls.Add(expTLB2, 0, shownRow + 1);
-                        levelTable2.RowCount++;
-                    }
+                    levelTable1.Controls.Add(expTLB1, 0, shownRow + 1);
+                    levelTable1.RowCount++;
+                    levelTable2.Controls.Add(expTLB2, 0, shownRow + 1);
+                    levelTable2.RowCount++;
                 }
             }
 
@@ -334,9 +333,14 @@ namespace nav
             GuiHelper.setStyleLevelTable(ref levelTable2);
         }
 
-        void levelTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
+        void levelTable1_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
         {
-            if (e.Row == rowHighlight)
+            if (e.Row == rowHighlight1)
+                e.Graphics.DrawRectangle(new Pen(Color.Red, 3), e.CellBounds);
+        }
+        void levelTable2_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
+        {
+            if (e.Row == rowHighlight1)
                 e.Graphics.DrawRectangle(new Pen(Color.Red, 3), e.CellBounds);
         }
 
@@ -359,7 +363,7 @@ namespace nav
                 Properties.Settings.Default.Save();
 
                 yourLevelBox.Invoke(new Action(() => yourLevelBox.SelectedIndex = fr.getCharacterLevel(characterName, logfileStr)));
-            }catch(Exception e)
+            }catch(Exception)
             {
 
             }
