@@ -43,7 +43,7 @@ namespace nav
         
         private void initZoneLvl(ref List<Tuple<string, int, int>> areaLevels, string mapFolder)
         {
-            if (mapFolder != "" && !mapFolderInit)
+            if (!string.IsNullOrEmpty(mapFolder) && !mapFolderInit)
             {
                 FileReader.initZoneLvlReader(ref areaLevels, mapFolder);
                 mapFolderInit = true;
@@ -53,7 +53,7 @@ namespace nav
         public void saveZoneLevel(string areaName, int mapLevel, int partNumber)
         {
 #if ZONELEVELINIT
-            if (areaName != "")
+            if (!string.IsNullOrEmpty(areaName))
 #else
             if (areaName != "" && !isZoneLevelKnown(areaName))
 #endif
@@ -66,7 +66,7 @@ namespace nav
 
         private void saveZoneLevelToFile(string areaName, int mapLevel, int partNumber)
         {
-            if (mapFolder != "")
+            if (!string.IsNullOrEmpty(mapFolder))
             {
                 using (StreamWriter outputFile = new StreamWriter(mapFolder + @"\zoneLevel.csv", true))
                 {

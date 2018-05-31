@@ -232,6 +232,10 @@ namespace nav
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             DialogResult folder = fbd.ShowDialog();
+            if (folder == DialogResult.Cancel)
+            {
+                return;
+            }
             mapFolder = fbd.SelectedPath.ToString().Trim();
             zl.updateMapFolder(mapFolder);
 

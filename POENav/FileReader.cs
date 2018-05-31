@@ -94,7 +94,7 @@ namespace nav
 
         public void updateLogFile(string logfileStr)
         {
-            while(logfileStr == "")
+            while(string.IsNullOrEmpty(logfileStr))
             {
                 MessageBox.Show("Select POE log file location.");
                 logfileStr = logFileLocMethod();
@@ -107,10 +107,14 @@ namespace nav
         public static void initZoneLvlReader(ref List<Tuple<string, int, int>> areaLevels, string mapFolder)
         {
             string localMapFolder = mapFolder.Trim() + zoneLevelFileName;
-
-            string line = "";
+            if(!File.Exists(localMapFolder))
+            {
+                return;
+            }
+            
             using (StreamReader file = new StreamReader(localMapFolder))
             {
+                string line = "";
                 while ((line = file.ReadLine()) != null)
                 {
                     string[] partsOfLine = line.Split(',');
