@@ -104,7 +104,7 @@ namespace nav
             lastReadLength = logFileStream.Length;
         }
 
-        public static void initZoneLvlReader(ref List<Tuple<string, int>> areaLevels, string mapFolder)
+        public static void initZoneLvlReader(ref List<Tuple<string, int, int>> areaLevels, string mapFolder)
         {
             string localMapFolder = mapFolder.Trim() + zoneLevelFileName;
 
@@ -122,9 +122,10 @@ namespace nav
 
                         if (partsOfLine[0] != "")
                         {
-                            int parsedNum = 0;
-                            Int32.TryParse(partsOfLine[1], out parsedNum);
-                            Tuple<string, int> areaEntry = new Tuple<string, int>(partsOfLine[0], parsedNum);
+                            int parsedPart = 0;
+                            Int32.TryParse(partsOfLine[1], out parsedPart);
+                            Int32.TryParse(partsOfLine[2], out parsedPart);
+                            Tuple<string, int, int> areaEntry = new Tuple<string, int, int>(partsOfLine[0], parsedPart, parsedPart);
 
                             areaLevels.Add(areaEntry);
                         }

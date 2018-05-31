@@ -46,6 +46,9 @@ namespace nav
             if ((rows - 1) * columns >= count) { rows--; }
             if (rows == 0) { rows = 1; }
 
+            mapsTable.RowStyles.Add(new RowStyle(SizeType.Percent, 100/ rows));
+            mapsTable.ColumnStyles.Add(new RowStyle(SizeType.Percent, 100 / columns));
+
             mapsTable.ColumnCount = columns;
             mapsTable.RowCount = rows;
         }

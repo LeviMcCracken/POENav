@@ -25,8 +25,9 @@ namespace nav
         string mapFolder = "";
         int rowHighlight = 0;
         int yourLevel = 0;
-        int mapLevel = 0;
-        
+        int mapLevel1 = 0;
+        int mapLevel2 = 0;
+
         ZoneLevel zl;
         FileReader fr;
 
@@ -120,9 +121,11 @@ namespace nav
 
         private void setZoneLvlGui(string areaName)
         {
-            mapLevel = zl.zoneKnown(areaName);
+            mapLevel1 = zl.zoneKnown(areaName, 1);
+            mapLevel2 = zl.zoneKnown(areaName, 2);
 
-            if (mapLevel == -1)
+            if (mapLevel1 == -1 && levelTab.SelectedIndex == 0 
+                || mapLevel2 == -1 && levelTab.SelectedIndex == 1)
             {
                 errors.BackColor = Color.Red;
                 errors.Text = "Set Zone Level";
@@ -131,7 +134,14 @@ namespace nav
             {
                 errors.Text = "";
                 errors.BackColor = Color.DarkGray;
-                mapLevelBox.SelectedIndex = mapLevel;
+                if (levelTab.SelectedIndex == 0)
+                {
+                    mapLevelBox.SelectedIndex = mapLevel1;
+                }
+                else
+                {
+                    mapLevelBox.SelectedIndex = mapLevel2;
+                }
             }
         }
 
@@ -238,23 +248,41 @@ namespace nav
         }
 
 
-        private void mapLevelBox_SelectedIndexChanged_1(object sender, EventArgs e)
+        private void mapLevelBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mapLevel = mapLevelBox.SelectedIndex;
+            if (levelTab.SelectedIndex == 0)
+            {
+                mapLevel1 = mapLevelBox.SelectedIndex;
+            }
+            else
+            {
+                mapLevel2 = mapLevelBox.SelectedIndex;
+            }
             redrawLevelTable();
 
             errors.Text = "";
             errors.BackColor = Color.DarkGray;
 #if ZONELEVELINIT
-            zl.saveZoneLevel(areaName, mapLevel);
+            if (levelTab.SelectedIndex == 0)
+            {
+                zl.saveZoneLevel(areaName, mapLevel1, 1);
+            }
+            else
+            {
+                zl.saveZoneLevel(areaName, mapLevel2, 2);
+            }
 #endif
         }
 
         private void redrawLevelTable()
         {
-            levelTable.Controls.Clear();
-            levelTable.ColumnCount = 1;
-            levelTable.RowCount = 0;
+            levelTable1.Controls.Clear();
+            levelTable1.ColumnCount = 1;
+            levelTable1.RowCount = 0;
+
+            levelTable2.Controls.Clear();
+            levelTable2.ColumnCount = 1;
+            levelTable2.RowCount = 0;
 
             int safeZone = (int)Math.Floor((double)(3 + (yourLevel / 16)));
 
@@ -270,10 +298,10 @@ namespace nav
 
                 if (xpMult > 0.20)
                 {
-                    if (monsterLevel == mapLevel)
+                    if (monsterLevel == mapLevel1 || monsterLevel == mapLevel2)
                     {
                         rowHighlight = shownRow + 1;
-                        levelTable.CellPaint += levelTable_CellPaint;
+                        levelTable2.CellPaint += levelTable_CellPaint;
                     }
 
                     int colorVal = (int)Math.Floor(255 * xpMult);
@@ -284,13 +312,13 @@ namespace nav
                     expTLB.Controls.Add(GuiHelper.tableLevelCreator(monsterLevel, colorVal), 0, shownRow + 1);
                     expTLB.Controls.Add(GuiHelper.xpMultiBoxCreator(xpMult, colorVal), 1, shownRow + 1);
 
-                    levelTable.Controls.Add(expTLB, 0, shownRow + 1);
+                    levelTable2.Controls.Add(expTLB, 0, shownRow + 1);
                     shownRow++;
-                    levelTable.RowCount++;
+                    levelTable2.RowCount++;
                 }
             }
 
-            GuiHelper.setStyleLevelTable(ref levelTable);
+            GuiHelper.setStyleLevelTable(ref levelTable2);
         }
 
         void levelTable_CellPaint(object sender, TableLayoutCellPaintEventArgs e)

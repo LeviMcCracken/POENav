@@ -60,7 +60,14 @@
     <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -112,14 +119,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="nav_1_TemporaryKey.pfx" />
-    <None Include="nav_2_TemporaryKey.pfx" />
-    <None Include="nav_3_TemporaryKey.pfx" />
-    <None Include="nav_4_TemporaryKey.pfx" />
-    <None Include="nav_5_TemporaryKey.pfx" />
-    <None Include="nav_6_TemporaryKey.pfx" />
-    <None Include="nav_7_TemporaryKey.pfx" />
-    <None Include="nav_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
