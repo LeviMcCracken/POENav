@@ -300,12 +300,12 @@ namespace nav
                 {
                     if (monsterLevel == mapLevel1)
                     {
-                        rowHighlight1 = shownRow + 1;
+                        rowHighlight1 = shownRow + 2;
                         levelTable1.CellPaint += levelTable1_CellPaint;
                     }
                     else if (monsterLevel == mapLevel2)
                     {
-                        rowHighlight2 = shownRow + 1;
+                        rowHighlight2 = shownRow + 2;
                         levelTable2.CellPaint += levelTable2_CellPaint;
                     }
 
@@ -340,7 +340,7 @@ namespace nav
         }
         void levelTable2_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
         {
-            if (e.Row == rowHighlight1)
+            if (e.Row == rowHighlight2)
                 e.Graphics.DrawRectangle(new Pen(Color.Red, 3), e.CellBounds);
         }
 
